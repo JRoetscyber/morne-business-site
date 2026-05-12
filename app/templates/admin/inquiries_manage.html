@@ -1,0 +1,87 @@
+{% extends 'admin/base.html' %}
+{% block title %}Inquiries — V&M Projects Admin{% endblock %}
+{% block page_title %}Inquiries{% endblock %}
+{% block page_crumb %}<span class="topbar-crumb">/ Manage Leads</span>{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="page-heading">Client Inquiries</h1>
+        <p class="page-sub">{{ inquiries|length }} total inquiry leads received.</p>
+    </div>
+</div>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table orders-table mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Prospect</th>
+                    <th>Contact Info</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inquiry in inquiries %}
+                {% set initials = (inquiry['customer_name'].split()[0][0] ~ (inquiry['customer_name'].split()[-1][0] if inquiry['customer_name'].split()|length > 1 else ''))|upper %}
+                <tr>
+                    <td><span class="order-id">#VM-{{ '%04d' % inquiry['id'] }}</span></td>
+                    <td>
+                        <div class="customer-cell">
+                            <div class="cust-avatar">{{ initials }}</div>
+                            <div class="cust-name">{{ inquiry['customer_name'] }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cust-email"><i class="bi bi-envelope me-1"></i>{{ inquiry['customer_email'] }}</div>
+                        {% if inquiry['customer_phone'] %}
+                        <div class="cust-email"><i class="bi bi-telephone me-1"></i>{{ inquiry['customer_phone'] }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div style="font-size:0.8rem; font-weight: 700;">{{ inquiry['subject'] or 'General Inquiry' }}</div>
+                        <div class="order-date" style="font-size: 0.7rem;">{{ inquiry['created_at'][:16] }}</div>
+                    </td>
+                    <td>
+                        <div style="font-size:0.75rem; color:var(--text-muted); max-width: 300px; white-space: normal;">
+                            {{ inquiry['message'] }}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge-status {{ inquiry['status'] }}">{{ inquiry['status'] }}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            {% if inquiry['status'] == 'new' %}
+                            <form method="POST" action="{{ url_for('admin.update_inquiry_status_route', inquiry_id=inquiry['id'], status='read') }}">
+                                <button type="submit" class="tbl-action-btn" title="Mark as Read">
+                                    <i class="bi bi-check2-all"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('admin.delete_inquiry_route', inquiry_id=inquiry['id']) }}"
+                                  onsubmit="return confirm('Delete this inquiry?')">
+                                <button type="submit" class="tbl-action-btn" style="color:#D08E8C;" title="Delete">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted);">
+                        No inquiries received yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

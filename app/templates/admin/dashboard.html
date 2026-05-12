@@ -1,0 +1,118 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard — V&M Projects Admin{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_crumb %}<span class="topbar-crumb">/ Overview</span>{% endblock %}
+
+{% block content %}
+
+<!-- Heading -->
+<div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="page-heading">Welcome, {{ admin_username }}.</h1>
+        <p class="page-sub">Operational overview for V&M Projects.</p>
+    </div>
+    <a href="{{ url_for('admin.inquiries') }}" class="btn-admin-teal sm" style="background: var(--primary); border-color: var(--primary); color: #000;">
+        <i class="bi bi-envelope-paper me-1"></i> View All Inquiries
+    </a>
+</div>
+
+<!-- ── STAT CARDS ─────────────────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-xl-4">
+        <div class="stat-card">
+            <div class="stat-glow amber-glow"></div>
+            <div class="stat-icon amber"><i class="bi bi-envelope-paper"></i></div>
+            <div class="stat-label">Total Inquiries</div>
+            <div class="stat-value">{{ total_inquiries }}</div>
+            <div class="stat-delta warn">
+                <i class="bi bi-clock"></i> {{ new_inquiries }} new
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-xl-4">
+        <div class="stat-card">
+            <div class="stat-glow blue-glow"></div>
+            <div class="stat-icon blue"><i class="bi bi-tools"></i></div>
+            <div class="stat-label">Services Offered</div>
+            <div class="stat-value">{{ total_services }}</div>
+            <div class="stat-delta up">
+                <i class="bi bi-check-circle"></i> Active listings
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-xl-4">
+        <div class="stat-card">
+            <div class="stat-glow amber-glow"></div>
+            <div class="stat-icon amber"><i class="bi bi-collection"></i></div>
+            <div class="stat-label">Projects Completed</div>
+            <div class="stat-value">{{ total_projects }}</div>
+            <div class="stat-delta up">
+                <i class="bi bi-award"></i> Portfolio entries
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── RECENT INQUIRIES ──────────────────────────────────────────── -->
+<div class="row g-3">
+
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div>
+                    <h6 class="admin-card-title">Recent Inquiries</h6>
+                    <div class="admin-card-sub">{{ total_inquiries }} total inquiries received</div>
+                </div>
+                <a href="{{ url_for('admin.inquiries') }}" class="btn-admin-outline sm">View All</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table orders-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Inquiry ID</th>
+                            <th>Customer</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Date Received</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inquiry in recent_inquiries %}
+                        {% set initials = (inquiry['customer_name'].split()[0][0] ~ (inquiry['customer_name'].split()[-1][0] if inquiry['customer_name'].split()|length > 1 else ''))|upper %}
+                        <tr>
+                            <td><span class="order-id">#VM-{{ '%04d' % inquiry['id'] }}</span></td>
+                            <td>
+                                <div class="customer-cell">
+                                    <div class="cust-avatar" style="background: var(--primary); color: #000;">{{ initials }}</div>
+                                    <div>
+                                        <div class="cust-name">{{ inquiry['customer_name'] }}</div>
+                                        <div class="cust-email">{{ inquiry['customer_email'] }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ inquiry['subject'] or 'General Inquiry' }}</td>
+                            <td>
+                                <span class="badge-status {{ inquiry['status'] }}">{{ inquiry['status'] }}</span>
+                            </td>
+                            <td class="order-date">{{ inquiry['created_at'][:16] }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">
+                                No inquiries received yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

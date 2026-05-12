@@ -1,0 +1,62 @@
+{% extends 'admin/base.html' %}
+{% block title %}Edit Service — V&M Projects Admin{% endblock %}
+{% block page_title %}Edit Service{% endblock %}
+{% block page_crumb %}<span class="topbar-crumb">/ {{ service['title'] }}</span>{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <a href="{{ url_for('admin.services') }}" class="btn-admin-outline sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Services
+    </a>
+</div>
+
+<div class="admin-card" style="max-width: 800px;">
+    <div class="admin-card-header">
+        <h5 class="admin-card-title">SERVICE DETAILS</h5>
+    </div>
+    <form method="POST" enctype="multipart/form-data" class="p-4">
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+            <div>
+                <label class="admin-label">Service Title *</label>
+                <input type="text" name="title" class="admin-input" value="{{ service['title'] }}" required>
+            </div>
+            <div>
+                <label class="admin-label">Category *</label>
+                <input type="text" name="category" class="admin-input" value="{{ service['category'] }}" required>
+            </div>
+            <div>
+                <label class="admin-label">Short Description *</label>
+                <textarea name="short_description" class="admin-textarea" rows="2" required>{{ service['short_description'] }}</textarea>
+            </div>
+            <div>
+                <label class="admin-label">Long Description</label>
+                <textarea name="long_description" class="admin-textarea" rows="6">{{ service['long_description'] }}</textarea>
+            </div>
+            
+            <div class="row align-items-center">
+                <div class="col-sm-3">
+                    {% if service['image_path'] %}
+                    <img src="{{ url_for('static', filename=service['image_path']) }}"
+                         alt="" style="width:100%; border-radius:8px; border:1px solid var(--glass-border);">
+                    {% else %}
+                    <div style="width:100%; aspect-ratio:1; background:var(--bg-accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);">
+                        <i class="bi bi-image" style="font-size:2rem;"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-sm-9">
+                    <label class="admin-label">Update Image</label>
+                    <input type="file" name="image" class="admin-input">
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem;">Leave blank to keep current image.</p>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <button type="submit" class="btn-admin-primary">Update Service</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

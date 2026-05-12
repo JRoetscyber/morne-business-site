@@ -1,0 +1,182 @@
+{% extends 'admin/base.html' %}
+{% block title %}Settings — RVLTN Admin{% endblock %}
+{% block page_title %}Settings{% endblock %}
+{% block page_crumb %}<span class="topbar-crumb">/ Image Manager & Account</span>{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h1 class="page-heading">Settings</h1>
+    <p class="page-sub">Manage storefront images and your account credentials.</p>
+</div>
+
+<!-- ── IMAGE MANAGER ──────────────────────────────────────────────────────── -->
+<div class="admin-card mb-4">
+    <div class="admin-card-header">
+        <div>
+            <h6 class="admin-card-title">Image Manager</h6>
+            <div class="admin-card-sub">Upload and assign images to storefront placeholders.</div>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);">
+            <i class="bi bi-info-circle me-1"></i>
+            Supported: PNG, JPG, GIF, WebP
+        </div>
+    </div>
+
+    <div style="padding:1.5rem;">
+        <div class="row g-3">
+            {% for slot in image_slots %}
+            {% set img = current_images.get(slot.key) %}
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+                <div class="img-slot-card">
+                    <!-- Preview Area -->
+                    <div class="img-slot-preview" id="preview-{{ slot.key }}">
+                        {% if img %}
+                        <img src="{{ url_for('static', filename=img['file_path']) }}"
+                             alt="{{ slot.display }}">
+                        {% else %}
+                        <div class="img-slot-placeholder">
+                            <i class="bi bi-image"></i>
+                            <span>No image</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Slot Info -->
+                    <div class="img-slot-info">
+                        <div class="img-slot-label">{{ slot.display }}</div>
+                        <div class="img-slot-desc">{{ slot.desc }}</div>
+                        {% if img %}
+                        <div class="img-slot-meta">
+                            Uploaded {{ img['updated_at'][:10] }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form method="POST" action="{{ url_for('admin.upload_image') }}"
+                          enctype="multipart/form-data" class="img-slot-form">
+                        <input type="hidden" name="key" value="{{ slot.key }}">
+                        <label class="img-upload-btn" title="Choose image">
+                            <input type="file" name="image" accept="image/*"
+                                   class="img-file-input" data-preview="preview-{{ slot.key }}"
+                                   onchange="this.form.submit()">
+                            <i class="bi bi-upload me-1"></i>
+                            {{ 'Replace' if img else 'Upload' }}
+                        </label>
+                    </form>
+
+                    <!-- Delete (only if image exists) -->
+                    {% if img %}
+                    <form method="POST" action="{{ url_for('admin.delete_image', image_key=img['key']) }}"
+                          onsubmit="return confirm('Remove this image?')" style="margin-top:0.4rem;">
+                        <button type="submit" class="img-delete-btn">
+                            <i class="bi bi-trash3 me-1"></i> Remove
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+
+    <!-- ── CHANGE PASSWORD ─────────────────────────────────────────────────── -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h6 class="admin-card-title">Change Password</h6>
+            </div>
+            <form method="POST" action="{{ url_for('admin.change_password') }}"
+                  style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
+                <div>
+                    <label class="admin-label">Current Password</label>
+                    <input type="password" name="current_password" class="admin-input"
+                           placeholder="••••••••" required>
+                </div>
+                <div>
+                    <label class="admin-label">New Password</label>
+                    <input type="password" name="new_password" class="admin-input"
+                           placeholder="Min. 8 characters" minlength="8" required>
+                </div>
+                <div>
+                    <label class="admin-label">Confirm New Password</label>
+                    <input type="password" name="confirm_password" class="admin-input"
+                           placeholder="Repeat new password" required>
+                </div>
+                <div class="mt-2">
+                    <button type="submit" class="btn-admin-primary">
+                        <i class="bi bi-shield-check me-1"></i> Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── ADMIN USERS INFO ────────────────────────────────────────────────── -->
+    <div class="col-lg-6">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h6 class="admin-card-title">Admin Accounts</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table orders-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in admin_users %}
+                        <tr>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:0.6rem;">
+                                    <div class="cust-avatar" style="width:28px;height:28px;font-size:0.65rem;">
+                                        {{ u['username'][0]|upper }}
+                                    </div>
+                                    <span style="font-size:0.84rem;color:var(--text-primary);">{{ u['username'] }}</span>
+                                    {% if u['username'] == admin_username %}
+                                    <span style="font-size:0.62rem;background:rgba(74,124,122,0.15);color:var(--teal-light);padding:0.1rem 0.4rem;border-radius:10px;border:1px solid rgba(74,124,122,0.2);">You</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="order-date">{{ u['created_at'][:10] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <span style="font-size:0.72rem;color:var(--text-muted);">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Multi-admin support coming in a future update.
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+/* Live image preview before upload submits */
+document.querySelectorAll('.img-file-input').forEach(input => {
+    input.addEventListener('change', function () {
+        const previewId = this.dataset.preview;
+        const previewEl = document.getElementById(previewId);
+        if (!previewEl || !this.files || !this.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            previewEl.innerHTML = '<img src="' + e.target.result + '" alt="Preview" style="width:100%;height:100%;object-fit:cover;">';
+        };
+        reader.readAsDataURL(this.files[0]);
+    });
+});
+</script>
+{% endblock %}
