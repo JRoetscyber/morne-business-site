@@ -1,0 +1,138 @@
+/* ============================================================
+   DELCON — theme.css
+   Single source of truth for all design tokens.
+   All other CSS files import nothing; they consume these vars.
+   ============================================================ */
+
+:root {
+  /* ── Core Palette ─────────────────────────────────────────── */
+  --dc-black:         #080A0C;   /* deepest bg — near-black, cold steel tint */
+  --dc-surface:       #111418;   /* primary page surface */
+  --dc-surface-2:     #1C2128;   /* cards, panels */
+  --dc-surface-3:     #252B33;   /* hover states on panels, inputs */
+  --dc-steel:         #2D333B;   /* borders, dividers */
+  --dc-steel-light:   #444C56;   /* secondary rule lines */
+
+  /* ── Brand Orange ─────────────────────────────────────────── */
+  --dc-orange:        #E8590C;   /* primary CTA — RAL-2009 construction orange */
+  --dc-orange-bright: #FF6B1A;   /* hover state */
+  --dc-orange-dark:   #BF4A08;   /* active / pressed */
+  --dc-orange-subtle: rgba(232, 89, 12, 0.10);  /* tinted backgrounds */
+  --dc-orange-glow:   rgba(232, 89, 12, 0.28);  /* box-shadow glow */
+
+  /* ── Text ─────────────────────────────────────────────────── */
+  --dc-text:          #E6EDF3;   /* primary body copy — warm off-white */
+  --dc-text-muted:    #8B949E;   /* secondary / labels */
+  --dc-text-subtle:   #484F58;   /* placeholders, disabled */
+  --dc-white:         #FFFFFF;
+
+  /* ── Status ───────────────────────────────────────────────── */
+  --dc-success:     #2EA043;
+  --dc-success-bg:  rgba(46, 160, 67, 0.10);
+  --dc-danger:      #F85149;
+  --dc-danger-bg:   rgba(248, 81, 73, 0.10);
+  --dc-warning:     #D29922;
+  --dc-warning-bg:  rgba(210, 153, 34, 0.10);
+  --dc-info:        #388BFD;
+  --dc-info-bg:     rgba(56, 139, 253, 0.10);
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --dc-font: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+  /* ── Geometry ─────────────────────────────────────────────── */
+  --dc-radius-sm: 2px;
+  --dc-radius:    4px;
+  --dc-radius-lg: 6px;
+  --dc-radius-xl: 10px;
+
+  /* ── Shadows ──────────────────────────────────────────────── */
+  --dc-shadow-sm:     0 1px 4px  rgba(0, 0, 0, 0.55);
+  --dc-shadow:        0 4px 16px rgba(0, 0, 0, 0.65);
+  --dc-shadow-lg:     0 8px 32px rgba(0, 0, 0, 0.75);
+  --dc-shadow-orange: 0 4px 24px rgba(232, 89, 12, 0.32);
+
+  /* ── Motion ───────────────────────────────────────────────── */
+  --dc-ease:    0.18s ease;
+  --dc-ease-lg: 0.30s ease;
+}
+
+/* ── Global reset & base ──────────────────────────────────── */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--dc-font);
+  background-color: var(--dc-surface);
+  color: var(--dc-text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar            { width: 8px; height: 8px; }
+::-webkit-scrollbar-track      { background: var(--dc-black); }
+::-webkit-scrollbar-thumb      { background: var(--dc-steel); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover{ background: var(--dc-orange); }
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--dc-white);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+h1 { font-size: clamp(2rem,   5vw, 3.5rem); }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.5rem); }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.75rem); }
+
+a {
+  color: var(--dc-orange);
+  text-decoration: none;
+  transition: color var(--dc-ease);
+}
+a:hover { color: var(--dc-orange-bright); }
+
+/* Utilities */
+.text-orange      { color: var(--dc-orange)      !important; }
+.text-dc-muted    { color: var(--dc-text-muted)  !important; }
+.text-dc-subtle   { color: var(--dc-text-subtle) !important; }
+.bg-dc-black      { background-color: var(--dc-black)     !important; }
+.bg-dc-surface    { background-color: var(--dc-surface)   !important; }
+.bg-dc-surface-2  { background-color: var(--dc-surface-2) !important; }
+.border-dc-steel  { border-color: var(--dc-steel)  !important; }
+.border-orange    { border-color: var(--dc-orange) !important; }
+
+/* Section heading with orange underline accent */
+.dc-section-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dc-orange);
+  margin-bottom: 0.5rem;
+}
+
+.dc-section-title {
+  position: relative;
+  padding-bottom: 0.65rem;
+  display: inline-block;
+}
+.dc-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 52px; height: 3px;
+  background: var(--dc-orange);
+}
+
+.dc-hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dc-orange) 0%, transparent 100%);
+  margin: 2.5rem 0;
+}

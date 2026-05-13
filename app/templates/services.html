@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+
+{% block title %}Services — Pipe Jacking, HDD, HDPE & Infrastructure | Delcon{% endblock %}
+{% block meta_description %}Delcon delivers Pipe Jacking (900mm–2800mm), Horizontal Directional Drilling (100mm–900mm), HDPE butt-welding, general infrastructure, and grouting across South Africa. Level-2 BBBEE contractor.{% endblock %}
+{% block meta_keywords %}pipe jacking South Africa, horizontal directional drilling, HDPE butt-welding, trenchless technology, culvert jacking, infrastructure contractor, grouting, guniting, Level 2 BBBEE{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE HERO
+═══════════════════════════════════════════════════════════ -->
+<section class="service-hero" aria-label="Services overview">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <span class="dc-section-label">What We Do</span>
+        <h1 class="mt-1 mb-3">Multi-Disciplinary<br><span class="text-orange">Contracting Services</span></h1>
+        <p class="lead" style="max-width:580px;">
+          Trenchless technology, civil infrastructure, and specialist ground
+          engineering delivered across South Africa — under budget, under ground,
+          on time. Level-2 BBBEE certified.
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick-jump nav -->
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      <a href="#pipe-jacking" class="btn btn-secondary btn-sm">
+        <i class="bi bi-arrow-bar-right me-1"></i>Pipe Jacking
+      </a>
+      <a href="#hdd" class="btn btn-secondary btn-sm">
+        <i class="bi bi-activity me-1"></i>HDD
+      </a>
+      <a href="#hdpe" class="btn btn-secondary btn-sm">
+        <i class="bi bi-fire me-1"></i>HDPE Welding
+      </a>
+      <a href="#infrastructure" class="btn btn-secondary btn-sm">
+        <i class="bi bi-buildings me-1"></i>Infrastructure
+      </a>
+      <a href="#grouting" class="btn btn-secondary btn-sm">
+        <i class="bi bi-droplet-fill me-1"></i>Grouting &amp; Guniting
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICE 1 — PIPE JACKING
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface" id="pipe-jacking" aria-labelledby="pj-heading">
+  <div class="container">
+    <div class="row align-items-start g-5">
+
+      <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div>
+            <span class="dc-section-label d-block" style="margin-bottom:0.1rem;">Trenchless Technology</span>
+            <h2 class="dc-section-title mb-0" id="pj-heading">Pipe Jacking &amp; Culvert Jacking</h2>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="badge" style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange); color:var(--dc-orange); font-size:0.75rem; padding:0.4em 0.8em;">
+            900mm – 2800mm Diameter
+          </span>
+        </div>
+
+        <p style="color:var(--dc-text); line-height:1.85; margin-bottom:1rem;">
+          Pipe jacking is a trenchless installation method that advances pre-cast
+          concrete pipe sections through the ground using hydraulic jacks — eliminating
+          the need to open-cut roads, railways, or environmentally sensitive land.
+          Delcon operates purpose-built jacking rigs capable of pushing pipes from
+          <strong style="color:var(--dc-white);">900mm up to 2800mm</strong> in diameter
+          through a wide range of ground conditions.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.85; margin-bottom:1.5rem;">
+          Culvert jacking extends this capability to rectangular box culverts under
+          active road or rail crossings, providing a structurally sound, permanent
+          solution with zero disruption to surface traffic. All installations are
+          executed under controlled conditions with continuous laser-guidance
+          monitoring for accuracy.
+        </p>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Scope of Work</h3>
+        <ul class="dc-scope-list mb-4">
+          <li>Pipe jacking of RCP (reinforced concrete pipe) from 900mm to 2800mm diameter</li>
+          <li>Culvert jacking under active road and rail crossings</li>
+          <li>Laser-guided bore steering for precision alignment</li>
+          <li>Drive pit and reception pit construction</li>
+          <li>Intermediate jacking stations for long drives</li>
+          <li>Annular grouting for pipe stabilisation</li>
+          <li>Post-installation pressure testing (where applicable)</li>
+        </ul>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Typical Applications</h3>
+        <div class="row g-2">
+          {% for app in [
+            'Road crossings without disrupting traffic',
+            'Railway crossings (live and inactive lines)',
+            'River and canal crossings',
+            'Storm water outfall installations',
+            'Sewer trunk main installations',
+            'Rural water supply pipelines'
+          ] %}
+          <div class="col-md-6">
+            <div style="display:flex; align-items:flex-start; gap:0.5rem; padding:0.4rem 0;
+                        border-bottom:1px solid var(--dc-steel); font-size:0.875rem; color:var(--dc-text-muted);">
+              <i class="bi bi-check-circle-fill text-orange flex-shrink-0 mt-1" style="font-size:0.75rem;"></i>
+              {{ app }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Sidebar spec panel -->
+      <div class="col-lg-5">
+        {% set _img = site_settings.get('service_img_pipe_jacking') %}
+        {% if _img %}
+          <div style="border-radius:var(--dc-radius-lg); overflow:hidden;
+                      border:1px solid var(--dc-steel); margin-bottom:1rem; aspect-ratio:4/3;">
+            <img src="{{ url_for('static', filename=_img) }}"
+                 alt="Pipe Jacking operation"
+                 style="width:100%; height:100%; object-fit:cover;">
+          </div>
+        {% endif %}
+        <div class="card p-4 mb-3" style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange); background:var(--dc-surface-2);">
+          <h3 class="h6 mb-3" style="text-transform:uppercase; letter-spacing:0.08em; color:var(--dc-orange); font-size:0.75rem;">Technical Specifications</h3>
+          <ul class="dc-scope-list">
+            <li><strong style="color:var(--dc-white);">Diameter range:</strong> 900mm – 2800mm</li>
+            <li><strong style="color:var(--dc-white);">Drive lengths:</strong> Up to 120m per drive (project dependent)</li>
+            <li><strong style="color:var(--dc-white);">Pipe material:</strong> Reinforced concrete (RCP)</li>
+            <li><strong style="color:var(--dc-white);">Guidance system:</strong> Laser-guided steering</li>
+            <li><strong style="color:var(--dc-white);">Ground conditions:</strong> Soil, weathered rock, mixed face</li>
+            <li><strong style="color:var(--dc-white);">Surface impact:</strong> Zero open-cut required</li>
+          </ul>
+        </div>
+        <a href="#contact-cta" class="btn btn-dc-primary w-100 btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Quote This Service
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICE 2 — HDD
+═══════════════════════════════════════════════════════════ -->
+<section class="section-dark" id="hdd" aria-labelledby="hdd-heading">
+  <div class="container">
+    <div class="row align-items-start g-5">
+
+      <!-- Sidebar spec panel — left on this section -->
+      <div class="col-lg-5 order-lg-2">
+        {% set _img = site_settings.get('service_img_hdd') %}
+        {% if _img %}
+          <div style="border-radius:var(--dc-radius-lg); overflow:hidden;
+                      border:1px solid var(--dc-steel); margin-bottom:1rem; aspect-ratio:4/3;">
+            <img src="{{ url_for('static', filename=_img) }}"
+                 alt="HDD Drilling operation"
+                 style="width:100%; height:100%; object-fit:cover;">
+          </div>
+        {% endif %}
+        <div class="card p-4 mb-3" style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange); background:var(--dc-surface-2);">
+          <h3 class="h6 mb-3" style="text-transform:uppercase; letter-spacing:0.08em; color:var(--dc-orange); font-size:0.75rem;">Technical Specifications</h3>
+          <ul class="dc-scope-list">
+            <li><strong style="color:var(--dc-white);">Diameter range:</strong> 100mm – 900mm</li>
+            <li><strong style="color:var(--dc-white);">Drive lengths:</strong> Up to 500m (product dependent)</li>
+            <li><strong style="color:var(--dc-white);">Products installed:</strong> HDPE, steel, PVC conduit</li>
+            <li><strong style="color:var(--dc-white);">Guidance system:</strong> Walkover &amp; wireline steering</li>
+            <li><strong style="color:var(--dc-white);">Ground conditions:</strong> Soft soil to weathered rock</li>
+            <li><strong style="color:var(--dc-white);">Surface impact:</strong> None — fully trenchless</li>
+          </ul>
+        </div>
+        <a href="#contact-cta" class="btn btn-dc-primary w-100 btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Quote This Service
+        </a>
+      </div>
+
+      <div class="col-lg-7 order-lg-1">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div>
+            <span class="dc-section-label d-block" style="margin-bottom:0.1rem;">Trenchless Technology</span>
+            <h2 class="dc-section-title mb-0" id="hdd-heading">Horizontal Directional Drilling</h2>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="badge" style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange); color:var(--dc-orange); font-size:0.75rem; padding:0.4em 0.8em;">
+            100mm – 900mm Diameter
+          </span>
+        </div>
+
+        <p style="color:var(--dc-text); line-height:1.85; margin-bottom:1rem;">
+          Horizontal Directional Drilling (HDD) is a steerable trenchless
+          installation technique that bores a curved or straight underground
+          path between two surface entry points, then pulls back a product pipe
+          or bundle of conduits. With no open excavation, HDD is the preferred
+          method for crossing rivers, wetlands, roads, and urban environments where
+          disturbance cannot be tolerated.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.85; margin-bottom:1.5rem;">
+          Delcon's HDD fleet covers a diameter range of
+          <strong style="color:var(--dc-white);">100mm to 900mm</strong>,
+          installing HDPE pipe, steel carrier pipes, and multi-conduit bundles
+          for water, gas, telecommunications, and electrical services.
+        </p>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Scope of Work</h3>
+        <ul class="dc-scope-list mb-4">
+          <li>Pilot bore drilling with electronic walkover or wireline guidance</li>
+          <li>Staged reaming to design diameter</li>
+          <li>Product pipe pullback (HDPE, steel, uPVC, conduit)</li>
+          <li>Entry and exit pit construction</li>
+          <li>Drilling fluid management and spoil disposal</li>
+          <li>Post-pullback pressure or continuity testing</li>
+        </ul>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Typical Applications</h3>
+        <div class="row g-2">
+          {% for app in [
+            'River and wetland crossings',
+            'Road and highway crossings',
+            'Water reticulation mains',
+            'Gas pipeline installations',
+            'Telecoms and electrical conduit',
+            'Urban infrastructure upgrades'
+          ] %}
+          <div class="col-md-6">
+            <div style="display:flex; align-items:flex-start; gap:0.5rem; padding:0.4rem 0;
+                        border-bottom:1px solid var(--dc-steel); font-size:0.875rem; color:var(--dc-text-muted);">
+              <i class="bi bi-check-circle-fill text-orange flex-shrink-0 mt-1" style="font-size:0.75rem;"></i>
+              {{ app }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICE 3 — HDPE BUTT-WELDING
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface" id="hdpe" aria-labelledby="hdpe-heading">
+  <div class="container">
+    <div class="row align-items-start g-5">
+
+      <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div>
+            <span class="dc-section-label d-block" style="margin-bottom:0.1rem;">Pipeline Fabrication</span>
+            <h2 class="dc-section-title mb-0" id="hdpe-heading">HDPE Butt-Welding</h2>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="badge" style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange); color:var(--dc-orange); font-size:0.75rem; padding:0.4em 0.8em;">
+            90mm – 355mm Pipe Diameter
+          </span>
+        </div>
+
+        <p style="color:var(--dc-text); line-height:1.85; margin-bottom:1rem;">
+          HDPE (High-Density Polyethylene) butt-fusion welding produces a fully
+          homogeneous, monolithic pipeline joint with pressure ratings matching or
+          exceeding the parent pipe. Delcon's certified welding teams operate
+          machine-controlled fusion equipment across the
+          <strong style="color:var(--dc-white);">90mm to 355mm</strong> diameter range,
+          producing joints suitable for potable water, wastewater, irrigation,
+          and gas distribution systems.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.85; margin-bottom:1.5rem;">
+          Every weld is logged with time, temperature, fusion pressure, and cooling
+          time records in compliance with SANS 0268 and manufacturer specifications.
+          All installations include hydrostatic pressure testing to confirm the
+          pipeline integrity before commissioning.
+        </p>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Scope of Work</h3>
+        <ul class="dc-scope-list mb-4">
+          <li>Machine-controlled HDPE butt-fusion welding (90mm – 355mm)</li>
+          <li>Weld log record keeping per SANS 0268</li>
+          <li>Trench excavation, pipe bedding, and backfill</li>
+          <li>Hydrostatic pressure testing per SANS 2001</li>
+          <li>Pipe-end preparation, squaring, and facing</li>
+          <li>Supply and install or weld-only contracts</li>
+        </ul>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Typical Applications</h3>
+        <div class="row g-2">
+          {% for app in [
+            'Potable water reticulation mains',
+            'Sewer rising mains',
+            'Irrigation pipeline networks',
+            'Industrial process pipelines',
+            'HDD product pipe fabrication',
+            'Pressure pipeline replacements'
+          ] %}
+          <div class="col-md-6">
+            <div style="display:flex; align-items:flex-start; gap:0.5rem; padding:0.4rem 0;
+                        border-bottom:1px solid var(--dc-steel); font-size:0.875rem; color:var(--dc-text-muted);">
+              <i class="bi bi-check-circle-fill text-orange flex-shrink-0 mt-1" style="font-size:0.75rem;"></i>
+              {{ app }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        {% set _img = site_settings.get('service_img_hdpe') %}
+        {% if _img %}
+          <div style="border-radius:var(--dc-radius-lg); overflow:hidden;
+                      border:1px solid var(--dc-steel); margin-bottom:1rem; aspect-ratio:4/3;">
+            <img src="{{ url_for('static', filename=_img) }}"
+                 alt="HDPE butt-welding"
+                 style="width:100%; height:100%; object-fit:cover;">
+          </div>
+        {% endif %}
+        <div class="card p-4 mb-3" style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange); background:var(--dc-surface-2);">
+          <h3 class="h6 mb-3" style="text-transform:uppercase; letter-spacing:0.08em; color:var(--dc-orange); font-size:0.75rem;">Technical Specifications</h3>
+          <ul class="dc-scope-list">
+            <li><strong style="color:var(--dc-white);">Diameter range:</strong> 90mm – 355mm</li>
+            <li><strong style="color:var(--dc-white);">Standards:</strong> SANS 0268, SANS 2001</li>
+            <li><strong style="color:var(--dc-white);">Pressure class:</strong> PN6 to PN16</li>
+            <li><strong style="color:var(--dc-white);">Weld type:</strong> Machine-controlled butt-fusion</li>
+            <li><strong style="color:var(--dc-white);">Testing:</strong> Hydrostatic pressure testing</li>
+            <li><strong style="color:var(--dc-white);">Documentation:</strong> Full weld log records</li>
+          </ul>
+        </div>
+        <a href="#contact-cta" class="btn btn-dc-primary w-100 btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Quote This Service
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICE 4 — GENERAL INFRASTRUCTURE
+═══════════════════════════════════════════════════════════ -->
+<section class="section-dark" id="infrastructure" aria-labelledby="infra-heading">
+  <div class="container">
+    <div class="row align-items-start g-5">
+
+      <div class="col-lg-5 order-lg-2">
+        {% set _img = site_settings.get('service_img_infrastructure') %}
+        {% if _img %}
+          <div style="border-radius:var(--dc-radius-lg); overflow:hidden;
+                      border:1px solid var(--dc-steel); margin-bottom:1rem; aspect-ratio:4/3;">
+            <img src="{{ url_for('static', filename=_img) }}"
+                 alt="General infrastructure work"
+                 style="width:100%; height:100%; object-fit:cover;">
+          </div>
+        {% endif %}
+        <div class="card p-4 mb-3" style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange); background:var(--dc-surface-2);">
+          <h3 class="h6 mb-3" style="text-transform:uppercase; letter-spacing:0.08em; color:var(--dc-orange); font-size:0.75rem;">Service Coverage</h3>
+          <ul class="dc-scope-list">
+            <li><strong style="color:var(--dc-white);">Water:</strong> Reticulation, bulk mains, reservoirs</li>
+            <li><strong style="color:var(--dc-white);">Sewer:</strong> Gravity networks, pump stations</li>
+            <li><strong style="color:var(--dc-white);">Storm water:</strong> Drainage, outfalls, retention</li>
+            <li><strong style="color:var(--dc-white);">Testing:</strong> Hydrostatic and leakage testing</li>
+            <li><strong style="color:var(--dc-white);">Rural focus:</strong> Municipal upgrades &amp; RDP</li>
+            <li><strong style="color:var(--dc-white);">Compliance:</strong> SANS 1200 series</li>
+          </ul>
+        </div>
+        <a href="#contact-cta" class="btn btn-dc-primary w-100 btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Quote This Service
+        </a>
+      </div>
+
+      <div class="col-lg-7 order-lg-1">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div>
+            <span class="dc-section-label d-block" style="margin-bottom:0.1rem;">Civil Engineering</span>
+            <h2 class="dc-section-title mb-0" id="infra-heading">General Infrastructure</h2>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="badge me-2" style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange); color:var(--dc-orange); font-size:0.75rem; padding:0.4em 0.8em;">Water</span>
+          <span class="badge me-2" style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange); color:var(--dc-orange); font-size:0.75rem; padding:0.4em 0.8em;">Sewer</span>
+          <span class="badge" style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange); color:var(--dc-orange); font-size:0.75rem; padding:0.4em 0.8em;">Storm Water</span>
+        </div>
+
+        <p style="color:var(--dc-text); line-height:1.85; margin-bottom:1rem;">
+          Beyond trenchless technology, Delcon delivers conventional civil
+          infrastructure contracts including water reticulation networks, sanitation
+          systems, and storm water management — with a strong track record in
+          rural development and municipal service delivery projects.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.85; margin-bottom:1.5rem;">
+          Pipeline pressure testing, gravity sewer installation, and complete water
+          supply schemes are executed by Delcon's own direct-employment workforce,
+          ensuring quality control at every stage without subcontracting risk.
+        </p>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Scope of Work</h3>
+        <ul class="dc-scope-list">
+          <li>Water reticulation — bulk mains to distribution networks</li>
+          <li>Gravity sewer installation and commissioning</li>
+          <li>Storm water drainage, headwalls, and outfall structures</li>
+          <li>Hydrostatic and leakage testing (SANS 2001)</li>
+          <li>Pump station civils and pipework</li>
+          <li>Rural development pipeline schemes (RDP, MIG-funded)</li>
+          <li>Trench excavation, pipe bedding, and compaction testing</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICE 5 — GROUTING & GUNITING
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface" id="grouting" aria-labelledby="grout-heading">
+  <div class="container">
+    <div class="row align-items-start g-5">
+
+      <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div>
+            <span class="dc-section-label d-block" style="margin-bottom:0.1rem;">Ground Engineering</span>
+            <h2 class="dc-section-title mb-0" id="grout-heading">Grouting, Guniting &amp; Lateral Support</h2>
+          </div>
+        </div>
+
+        <p style="color:var(--dc-text); line-height:1.85; margin-bottom:1rem;">
+          Delcon provides specialist ground stabilisation and structural protection
+          services including sinkhole void grouting, guniting (shotcrete/sprayed
+          concrete), and lateral support solutions. These services are critical
+          for protecting existing infrastructure and stabilising ground conditions
+          ahead of or during major civil construction.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.85; margin-bottom:1.5rem;">
+          Grout mixes are designed to suit specific ground conditions — from low
+          mobility grouts for void filling to cementitious grouts for structural
+          stabilisation. Guniting (shotcrete) provides rapid surface protection
+          for excavated faces, tunnel linings, and slope stabilisation applications.
+        </p>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Scope of Work</h3>
+        <ul class="dc-scope-list mb-4">
+          <li>Sinkhole investigation, void identification, and filling</li>
+          <li>Compaction and permeation grouting for ground improvement</li>
+          <li>Annular space grouting (post pipe jacking or HDD)</li>
+          <li>Guniting (dry-mix shotcrete) for slope and excavation protection</li>
+          <li>Lateral support: sheet piling, soldier piles, and anchoring</li>
+          <li>Rock face sealing and slope stabilisation</li>
+          <li>Tunnel invert and lining repairs</li>
+        </ul>
+
+        <h3 class="h6 text-orange mb-3" style="text-transform:uppercase; letter-spacing:0.08em;">Typical Applications</h3>
+        <div class="row g-2">
+          {% for app in [
+            'Sinkhole remediation (road and building)',
+            'Dolomite zone stabilisation',
+            'Pre-construction ground improvement',
+            'Excavation face protection',
+            'Slope stabilisation and erosion control',
+            'Pipeline trench lateral support'
+          ] %}
+          <div class="col-md-6">
+            <div style="display:flex; align-items:flex-start; gap:0.5rem; padding:0.4rem 0;
+                        border-bottom:1px solid var(--dc-steel); font-size:0.875rem; color:var(--dc-text-muted);">
+              <i class="bi bi-check-circle-fill text-orange flex-shrink-0 mt-1" style="font-size:0.75rem;"></i>
+              {{ app }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="card p-4 mb-3" style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange); background:var(--dc-surface-2);">
+          <h3 class="h6 mb-3" style="text-transform:uppercase; letter-spacing:0.08em; color:var(--dc-orange); font-size:0.75rem;">Service Types</h3>
+          <ul class="dc-scope-list">
+            <li><strong style="color:var(--dc-white);">Sinkhole grouting:</strong> Low mobility void filling</li>
+            <li><strong style="color:var(--dc-white);">Compaction grouting:</strong> Ground densification</li>
+            <li><strong style="color:var(--dc-white);">Annular grouting:</strong> Post-pipe-jack stabilisation</li>
+            <li><strong style="color:var(--dc-white);">Guniting:</strong> Dry-mix shotcrete application</li>
+            <li><strong style="color:var(--dc-white);">Lateral support:</strong> Soldier piles, sheet piling</li>
+            <li><strong style="color:var(--dc-white);">Anchoring:</strong> Soil and rock anchor systems</li>
+          </ul>
+        </div>
+        <a href="#contact-cta" class="btn btn-dc-primary w-100 btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Quote This Service
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BOTTOM CTA / CONTACT
+═══════════════════════════════════════════════════════════ -->
+<section class="section-dark" id="contact-cta" aria-label="Contact CTA">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7 text-center mb-5">
+        <span class="dc-section-label">Get Started</span>
+        <h2 class="mt-1">Request a Project Quotation</h2>
+        <p class="lead mt-3">
+          Our estimating team will review your project scope and provide
+          a detailed, itemised quotation — usually within 48 business hours.
+        </p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-7 col-xl-6">
+        <form action="{{ url_for('main.contact') }}" method="POST" novalidate>
+          {# Add {{ csrf_token() }} once Flask-WTF is configured #}
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="cta_name" class="form-label">Full Name *</label>
+              <input type="text" class="form-control" id="cta_name" name="full_name"
+                     placeholder="Your full name" required autocomplete="name">
+            </div>
+            <div class="col-md-6">
+              <label for="cta_phone" class="form-label">Phone *</label>
+              <input type="tel" class="form-control" id="cta_phone" name="phone"
+                     placeholder="076 000 0000" required autocomplete="tel">
+            </div>
+            <div class="col-md-6">
+              <label for="cta_email" class="form-label">Email *</label>
+              <input type="email" class="form-control" id="cta_email" name="email"
+                     placeholder="you@company.co.za" required autocomplete="email">
+            </div>
+            <div class="col-md-6">
+              <label for="cta_company" class="form-label">Company</label>
+              <input type="text" class="form-control" id="cta_company" name="company"
+                     placeholder="Organisation" autocomplete="organization">
+            </div>
+            <div class="col-12">
+              <label for="cta_service" class="form-label">Service Required *</label>
+              <select class="form-select" id="cta_service" name="service_type" required>
+                <option value="" disabled selected>Select a service…</option>
+                <option value="pipe_jacking">Pipe Jacking / Culvert Jacking</option>
+                <option value="hdd">Horizontal Directional Drilling (HDD)</option>
+                <option value="hdpe">HDPE Butt-Welding</option>
+                <option value="infrastructure">General Infrastructure</option>
+                <option value="grouting">Grouting &amp; Guniting / Lateral Support</option>
+                <option value="other">Other / Multiple Services</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label for="cta_message" class="form-label">Project Details *</label>
+              <textarea class="form-control" id="cta_message" name="message" rows="4"
+                        placeholder="Location, scope, pipe sizes, timeline…" required></textarea>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-dc-primary btn-cta-lg w-100">
+                <i class="bi bi-send-fill me-2"></i>Submit Quote Request
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <hr class="dc-hr mt-4">
+        <div class="d-flex flex-wrap justify-content-center gap-4 text-center">
+          <div>
+            <i class="bi bi-telephone-fill text-orange d-block mb-1"></i>
+            <a href="tel:0769415725" style="color:var(--dc-text);">076 941 5725</a>
+          </div>
+          <div>
+            <i class="bi bi-telephone-fill text-orange d-block mb-1"></i>
+            <a href="tel:0865826796" style="color:var(--dc-text-muted);">086 582 6796</a>
+          </div>
+          <div>
+            <i class="bi bi-envelope-fill text-orange d-block mb-1"></i>
+            <a href="mailto:INFO@VANDMPROJECTS.CO.ZA" style="color:var(--dc-text-muted); font-size:0.9rem;">
+              INFO@VANDMPROJECTS.CO.ZA
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

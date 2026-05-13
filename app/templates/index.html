@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+
+{% block title %}Delcon — Pipe Jacking, HDD & Infrastructure Contractors | South Africa{% endblock %}
+{% block meta_description %}Delcon is a Level-2 BBBEE trenchless technology specialist. Pipe Jacking (900mm–2800mm), Horizontal Directional Drilling, HDPE butt-welding, and civil infrastructure across South Africa.{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+     Background image comes from admin Settings → Image Manager.
+     The CSS class dc-hero--image activates the overlay + bg-image
+     rule in layout.css. Without an upload it renders the gradient pattern.
+═══════════════════════════════════════════════════════════ -->
+{% set hero_img = site_settings.get('hero_image_path') %}
+<section class="dc-hero{% if hero_img %} dc-hero--image{% endif %}"
+         {% if hero_img %}
+           style="--hero-img: url('{{ url_for('static', filename=hero_img) }}')"
+         {% endif %}
+         aria-label="Hero banner">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-xl-7 col-lg-9">
+
+        <div class="dc-hero-eyebrow">
+          <i class="bi bi-shield-check"></i>
+          Level-2 BBBEE &nbsp;&bull;&nbsp; Trenchless Technology Specialists
+        </div>
+
+        <h1 class="dc-hero-title">
+          South Africa's Underground<br>
+          <span class="text-orange">Infrastructure</span>, Built Right.
+        </h1>
+
+        <p class="dc-hero-sub">
+          From 900mm pipe jacking under live carriageways to precision directional
+          drilling in environmentally sensitive corridors — Delcon delivers complex
+          trenchless and civil infrastructure on time, on spec, on budget.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#contact" class="btn btn-dc-primary btn-cta-lg">
+            <i class="bi bi-send-fill me-2"></i>Get a Free Quote
+          </a>
+          <a href="{{ url_for('main.services') }}" class="btn btn-dc-outline btn-cta-lg">
+            Our Services <i class="bi bi-arrow-right ms-2"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════════════════════ -->
+<div class="dc-stats-bar" aria-label="Key statistics">
+  <div class="container">
+    <div class="row g-0">
+
+      <div class="col-6 col-md-3 dc-stat">
+        <div class="dc-stat-number">900mm</div>
+        <div class="dc-stat-label">Min Pipe Jacking Dia.</div>
+      </div>
+
+      <div class="col-6 col-md-3 dc-stat">
+        <div class="dc-stat-number">2800mm</div>
+        <div class="dc-stat-label">Max Pipe Jacking Dia.</div>
+      </div>
+
+      <div class="col-6 col-md-3 dc-stat">
+        <div class="dc-stat-number">Lvl&nbsp;2</div>
+        <div class="dc-stat-label">BBBEE Status</div>
+      </div>
+
+      <div class="col-6 col-md-3 dc-stat">
+        <div class="dc-stat-number">5+</div>
+        <div class="dc-stat-label">Disciplines</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICES
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface" id="services" aria-labelledby="services-heading">
+  <div class="container">
+
+    <div class="row align-items-end mb-5">
+      <div class="col-lg-7">
+        <span class="dc-section-label">What We Do</span>
+        <h2 class="dc-section-title mt-1" id="services-heading">Core Services</h2>
+        <p class="lead mt-3">
+          Multi-disciplinary trenchless and civil contracting for municipalities,
+          government bodies, and private-sector developers across South Africa.
+        </p>
+      </div>
+      <div class="col-lg-5 d-flex justify-content-lg-end mt-4 mt-lg-0">
+        <a href="{{ url_for('main.services') }}" class="btn btn-dc-outline">
+          View All Services <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Primary three -->
+    <div class="row g-4">
+
+      <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dc-service-card p-4 w-100">
+          <div class="dc-service-icon"><i class="bi bi-arrow-bar-right"></i></div>
+          <div class="dc-spec">900mm – 2800mm Diameter</div>
+          <h3 class="card-title h5">Pipe Jacking &amp; Culvert Jacking</h3>
+          <p class="card-text mb-4">
+            Trenchless installation of reinforced concrete pipes under roads,
+            railways, and live infrastructure. Full-scale jacking capacity from
+            900mm up to 2800mm diameter with minimal surface disruption.
+          </p>
+          <a href="{{ url_for('main.services') }}#pipe-jacking"
+             class="btn btn-dc-outline btn-sm align-self-start mt-auto">
+            Learn More <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dc-service-card p-4 w-100">
+          <div class="dc-service-icon"><i class="bi bi-activity"></i></div>
+          <div class="dc-spec">100mm – 900mm Diameter</div>
+          <h3 class="card-title h5">Horizontal Directional Drilling</h3>
+          <p class="card-text mb-4">
+            Precision HDD for installing pipelines, conduits, and services under
+            rivers, roads, and environmentally sensitive zones — no open trenching
+            required. Range: 100mm to 900mm diameter.
+          </p>
+          <a href="{{ url_for('main.services') }}#hdd"
+             class="btn btn-dc-outline btn-sm align-self-start mt-auto">
+            Learn More <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dc-service-card p-4 w-100">
+          <div class="dc-service-icon"><i class="bi bi-fire"></i></div>
+          <div class="dc-spec">90mm – 355mm Pipe</div>
+          <h3 class="card-title h5">HDPE Butt-Welding</h3>
+          <p class="card-text mb-4">
+            Certified HDPE butt-fusion welding for water, sewer, and gas
+            pipelines. Producing leak-free, high-pressure-rated joints from
+            90mm to 355mm — including full pressure testing.
+          </p>
+          <a href="{{ url_for('main.services') }}#hdpe"
+             class="btn btn-dc-outline btn-sm align-self-start mt-auto">
+            Learn More <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /row 1 -->
+
+    <!-- Additional services -->
+    <div class="row g-4 mt-0">
+
+      <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dc-service-card p-4 w-100">
+          <div class="dc-service-icon"><i class="bi bi-buildings"></i></div>
+          <div class="dc-spec">Water · Sewer · Storm Water</div>
+          <h3 class="card-title h5">General Infrastructure</h3>
+          <p class="card-text mb-4">
+            Water reticulation, sewer networks, storm water management systems,
+            and pipeline pressure testing for rural development and municipal
+            upgrade projects.
+          </p>
+          <a href="{{ url_for('main.services') }}#infrastructure"
+             class="btn btn-dc-outline btn-sm align-self-start mt-auto">
+            Learn More <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dc-service-card p-4 w-100">
+          <div class="dc-service-icon"><i class="bi bi-droplet-fill"></i></div>
+          <div class="dc-spec">Sinkhole · Void Filling · Shotcrete</div>
+          <h3 class="card-title h5">Grouting &amp; Guniting</h3>
+          <p class="card-text mb-4">
+            Sinkhole and void grouting, guniting (shotcrete), and lateral
+            support solutions for stabilising ground and protecting existing
+            infrastructure from subsurface movement.
+          </p>
+          <a href="{{ url_for('main.services') }}#grouting"
+             class="btn btn-dc-outline btn-sm align-self-start mt-auto">
+            Learn More <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- CTA card -->
+      <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card p-4 w-100 d-flex flex-column justify-content-center"
+             style="background: var(--dc-orange-subtle); border: 1px solid var(--dc-orange); border-top: 3px solid var(--dc-orange);">
+          <i class="bi bi-headset text-orange mb-3" style="font-size:2.5rem;"></i>
+          <h3 class="card-title h5 mb-2">Have a Project in Mind?</h3>
+          <p class="card-text mb-4">
+            Our engineers will scope your project and come back with a
+            detailed quote — typically within 48 business hours.
+          </p>
+          <a href="#contact" class="btn btn-dc-primary btn-cta">
+            <i class="bi bi-send-fill me-2"></i>Request a Quote
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /row 2 -->
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ABOUT / BBBEE
+     Right column shows the About image if uploaded, otherwise
+     falls back to the credential list cards.
+═══════════════════════════════════════════════════════════ -->
+{% set about_img = site_settings.get('about_image_path') %}
+<section class="section-dark" id="about" aria-labelledby="about-heading">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <!-- Text column -->
+      <div class="col-lg-6">
+        <span class="dc-section-label">Who We Are</span>
+        <h2 class="dc-section-title mt-1" id="about-heading">Multi-Disciplinary Contractors Built for Complexity</h2>
+        <p class="lead mt-3">
+          Delcon is a Level-2 BBBEE certified contracting company focused on
+          trenchless technology, rural infrastructure development, and civil
+          engineering services — delivered across South Africa.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.8;" class="mt-3">
+          Our teams operate specialised pipe jacking rigs, HDD drill units, and
+          HDPE fusion welding equipment, giving us the capacity to self-perform
+          complex projects that most contractors subcontract out. Tighter cost
+          control, better quality assurance, and a single point of accountability
+          on every project.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('main.projects') }}" class="btn btn-dc-outline btn-cta">
+            <i class="bi bi-folder2-open me-2"></i>View Projects
+          </a>
+          <a href="#contact" class="btn btn-dc-primary btn-cta">
+            <i class="bi bi-send-fill me-2"></i>Get a Quote
+          </a>
+        </div>
+      </div>
+
+      <!-- Image or credentials column -->
+      <div class="col-lg-6">
+        {% if about_img %}
+          <div style="border-radius: var(--dc-radius-xl); overflow: hidden;
+                      border: 1px solid var(--dc-steel); box-shadow: var(--dc-shadow-lg);">
+            <img src="{{ url_for('static', filename=about_img) }}"
+                 alt="Delcon field operations — pipe jacking and civil infrastructure"
+                 style="width: 100%; height: 100%; object-fit: cover; display: block; max-height: 500px;">
+          </div>
+        {% else %}
+          {# Fallback credential cards — replaced once About image is uploaded #}
+          <div class="dc-credential-card">
+            <div class="dc-cred-label">BBBEE Status</div>
+            <div class="dc-cred-value">Level {{ site_settings.get('bbbee_level', '2') }} Contributor — Verified</div>
+          </div>
+          <div class="dc-credential-card">
+            <div class="dc-cred-label">Pipe Jacking Capacity</div>
+            <div class="dc-cred-value">900mm – 2800mm Diameter</div>
+          </div>
+          <div class="dc-credential-card">
+            <div class="dc-cred-label">HDD Capability</div>
+            <div class="dc-cred-value">100mm – 900mm Diameter</div>
+          </div>
+          <div class="dc-credential-card">
+            <div class="dc-cred-label">HDPE Butt-Welding</div>
+            <div class="dc-cred-value">90mm – 355mm Certified Fusion</div>
+          </div>
+          <div class="dc-credential-card">
+            <div class="dc-cred-label">Sector Focus</div>
+            <div class="dc-cred-value">Municipalities · Government · Private Sector</div>
+          </div>
+          <div class="dc-credential-card">
+            <div class="dc-cred-label">Geographic Reach</div>
+            <div class="dc-cred-value">National — South Africa</div>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LEAD CAPTURE FORM
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface-2" id="contact" aria-labelledby="contact-heading">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-xl-7">
+
+        <div class="text-center mb-5">
+          <span class="dc-section-label">Get in Touch</span>
+          <h2 class="mt-1" id="contact-heading">Request a Quote</h2>
+          <p class="lead mt-3">
+            Tell us about your project and we'll come back with a full scoping
+            proposal within 48 business hours.
+          </p>
+        </div>
+
+        <form action="{{ url_for('main.index') }}" method="POST" novalidate>
+          {# Add {{ csrf_token() }} once Flask-WTF is configured #}
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label for="full_name" class="form-label">
+                Full Name <span class="text-orange">*</span>
+              </label>
+              <input type="text" class="form-control" id="full_name" name="full_name"
+                     placeholder="Your full name" required autocomplete="name">
+            </div>
+
+            <div class="col-md-6">
+              <label for="company" class="form-label">Company / Organisation</label>
+              <input type="text" class="form-control" id="company" name="company"
+                     placeholder="Company name" autocomplete="organization">
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label">
+                Email Address <span class="text-orange">*</span>
+              </label>
+              <input type="email" class="form-control" id="email" name="email"
+                     placeholder="you@company.co.za" required autocomplete="email">
+            </div>
+
+            <div class="col-md-6">
+              <label for="phone" class="form-label">
+                Phone Number <span class="text-orange">*</span>
+              </label>
+              <input type="tel" class="form-control" id="phone" name="phone"
+                     placeholder="076 000 0000" required autocomplete="tel">
+            </div>
+
+            <div class="col-12">
+              <label for="service_type" class="form-label">
+                Service Required <span class="text-orange">*</span>
+              </label>
+              <select class="form-select" id="service_type" name="service_type" required>
+                <option value="" disabled selected>Select a service…</option>
+                <option value="pipe_jacking">Pipe Jacking / Culvert Jacking</option>
+                <option value="hdd">Horizontal Directional Drilling (HDD)</option>
+                <option value="hdpe">HDPE Butt-Welding</option>
+                <option value="infrastructure">General Infrastructure (Water / Sewer / Storm Water)</option>
+                <option value="grouting">Grouting &amp; Guniting / Lateral Support</option>
+                <option value="other">Other / Multiple Services</option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label for="message" class="form-label">
+                Project Description <span class="text-orange">*</span>
+              </label>
+              <textarea class="form-control" id="message" name="message" rows="5"
+                        placeholder="Location, scope, pipe sizes, timeline…"
+                        required></textarea>
+            </div>
+
+            <div class="col-12 pt-1">
+              <button type="submit" class="btn btn-dc-primary btn-cta-lg w-100">
+                <i class="bi bi-send-fill me-2"></i>Submit Enquiry
+              </button>
+              <p class="text-center mt-3" style="font-size:0.8rem; color:var(--dc-text-subtle);">
+                <i class="bi bi-lock-fill me-1 text-orange"></i>
+                Your information is kept strictly confidential and never shared.
+              </p>
+            </div>
+
+          </div>
+        </form>
+
+        <!-- Direct contact fallback -->
+        <hr class="dc-hr mt-2">
+        <div class="row g-4 text-center">
+          <div class="col-md-6">
+            <i class="bi bi-telephone-fill text-orange d-block mb-2" style="font-size:1.6rem;"></i>
+            <div class="dc-section-label">Call Direct</div>
+            <a href="tel:{{ site_settings.get('phone_primary', '0769415725') | replace(' ','') }}"
+               class="d-block fw-bold mt-1" style="color:var(--dc-text); font-size:1.05rem;">
+              {{ site_settings.get('phone_primary', '076 941 5725') }}
+            </a>
+            {% if site_settings.get('phone_secondary') %}
+              <a href="tel:{{ site_settings.get('phone_secondary') | replace(' ','') }}"
+                 class="d-block text-dc-muted">
+                {{ site_settings.get('phone_secondary') }}
+              </a>
+            {% else %}
+              <a href="tel:0865826796" class="d-block text-dc-muted">086 582 6796</a>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-envelope-fill text-orange d-block mb-2" style="font-size:1.6rem;"></i>
+            <div class="dc-section-label">Email Us</div>
+            <a href="mailto:{{ site_settings.get('email_contact', 'INFO@VANDMPROJECTS.CO.ZA') }}"
+               class="d-block fw-bold mt-1"
+               style="color:var(--dc-text); font-size:1rem; word-break:break-all;">
+              {{ site_settings.get('email_contact', 'INFO@VANDMPROJECTS.CO.ZA') }}
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

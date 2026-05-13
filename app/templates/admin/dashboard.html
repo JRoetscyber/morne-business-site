@@ -1,118 +1,249 @@
-{% extends 'admin/base.html' %}
-{% block title %}Dashboard — V&M Projects Admin{% endblock %}
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Dashboard{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
-{% block page_crumb %}<span class="topbar-crumb">/ Overview</span>{% endblock %}
 
 {% block content %}
 
-<!-- Heading -->
-<div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-2">
-    <div>
-        <h1 class="page-heading">Welcome, {{ admin_username }}.</h1>
-        <p class="page-sub">Operational overview for V&M Projects.</p>
-    </div>
-    <a href="{{ url_for('admin.inquiries') }}" class="btn-admin-teal sm" style="background: var(--primary); border-color: var(--primary); color: #000;">
-        <i class="bi bi-envelope-paper me-1"></i> View All Inquiries
-    </a>
+<!-- Page heading -->
+<div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-4">
+  <div>
+    <h2 style="font-size:1.35rem; font-weight:700; color:var(--dc-white); margin:0;">
+      Welcome back, {{ admin_username if admin_username is defined else 'Admin' }}.
+    </h2>
+    <p style="color:var(--dc-text-muted); font-size:0.875rem; margin:0.2rem 0 0;">
+      Operational overview — Delcon Admin Portal
+    </p>
+  </div>
+  <a href="{{ url_for('admin.inquiries') }}" class="btn btn-dc-primary">
+    <i class="bi bi-inbox-fill me-2"></i>View All Inquiries
+  </a>
 </div>
 
-<!-- ── STAT CARDS ─────────────────────────────────────────────────────────── -->
+<!-- ── KPI CARDS ──────────────────────────────────────────── -->
 <div class="row g-3 mb-4">
 
-    <div class="col-6 col-xl-4">
-        <div class="stat-card">
-            <div class="stat-glow amber-glow"></div>
-            <div class="stat-icon amber"><i class="bi bi-envelope-paper"></i></div>
-            <div class="stat-label">Total Inquiries</div>
-            <div class="stat-value">{{ total_inquiries }}</div>
-            <div class="stat-delta warn">
-                <i class="bi bi-clock"></i> {{ new_inquiries }} new
-            </div>
+  <div class="col-6 col-xl-3">
+    <div class="admin-kpi-card kpi-accent">
+      <div class="admin-kpi-icon icon-orange">
+        <i class="bi bi-inbox-fill"></i>
+      </div>
+      <div class="admin-kpi-body">
+        <div class="admin-kpi-value">{{ total_inquiries | default(0) }}</div>
+        <div class="admin-kpi-label">Total Inquiries</div>
+        <div class="admin-kpi-delta {% if new_inquiries > 0 %}up{% endif %}">
+          {% if new_inquiries is defined and new_inquiries > 0 %}
+            <i class="bi bi-arrow-up-short"></i> {{ new_inquiries }} new
+          {% else %}
+            <i class="bi bi-check2"></i> All read
+          {% endif %}
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="col-6 col-xl-4">
-        <div class="stat-card">
-            <div class="stat-glow blue-glow"></div>
-            <div class="stat-icon blue"><i class="bi bi-tools"></i></div>
-            <div class="stat-label">Services Offered</div>
-            <div class="stat-value">{{ total_services }}</div>
-            <div class="stat-delta up">
-                <i class="bi bi-check-circle"></i> Active listings
-            </div>
+  <div class="col-6 col-xl-3">
+    <div class="admin-kpi-card kpi-warning">
+      <div class="admin-kpi-icon icon-warning">
+        <i class="bi bi-clock-fill"></i>
+      </div>
+      <div class="admin-kpi-body">
+        <div class="admin-kpi-value">{{ new_inquiries | default(0) }}</div>
+        <div class="admin-kpi-label">Awaiting Response</div>
+        <div class="admin-kpi-delta {% if new_inquiries > 0 %}down{% endif %}">
+          {% if new_inquiries is defined and new_inquiries > 0 %}
+            <i class="bi bi-exclamation-circle"></i> Needs attention
+          {% else %}
+            <i class="bi bi-check2-circle"></i> Inbox clear
+          {% endif %}
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="col-6 col-xl-4">
-        <div class="stat-card">
-            <div class="stat-glow amber-glow"></div>
-            <div class="stat-icon amber"><i class="bi bi-collection"></i></div>
-            <div class="stat-label">Projects Completed</div>
-            <div class="stat-value">{{ total_projects }}</div>
-            <div class="stat-delta up">
-                <i class="bi bi-award"></i> Portfolio entries
-            </div>
+  <div class="col-6 col-xl-3">
+    <div class="admin-kpi-card kpi-success">
+      <div class="admin-kpi-icon icon-success">
+        <i class="bi bi-building-check"></i>
+      </div>
+      <div class="admin-kpi-body">
+        <div class="admin-kpi-value">{{ total_projects | default(0) }}</div>
+        <div class="admin-kpi-label">Projects Listed</div>
+        <div class="admin-kpi-delta up">
+          <i class="bi bi-folder2-open"></i> Portfolio entries
         </div>
+      </div>
     </div>
+  </div>
 
-</div>
+  <div class="col-6 col-xl-3">
+    <div class="admin-kpi-card kpi-info">
+      <div class="admin-kpi-icon icon-info">
+        <i class="bi bi-tools"></i>
+      </div>
+      <div class="admin-kpi-body">
+        <div class="admin-kpi-value">{{ total_services | default(0) }}</div>
+        <div class="admin-kpi-label">Services Active</div>
+        <div class="admin-kpi-delta up">
+          <i class="bi bi-check-circle"></i> Live listings
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- ── RECENT INQUIRIES ──────────────────────────────────────────── -->
+</div><!-- /kpi row -->
+
+<!-- ── RECENT INQUIRIES TABLE ─────────────────────────────── -->
 <div class="row g-3">
+  <div class="col-12">
+    <div class="admin-table-wrap">
 
-    <div class="col-12">
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <div>
-                    <h6 class="admin-card-title">Recent Inquiries</h6>
-                    <div class="admin-card-sub">{{ total_inquiries }} total inquiries received</div>
-                </div>
-                <a href="{{ url_for('admin.inquiries') }}" class="btn-admin-outline sm">View All</a>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table orders-table mb-0">
-                    <thead>
-                        <tr>
-                            <th>Inquiry ID</th>
-                            <th>Customer</th>
-                            <th>Subject</th>
-                            <th>Status</th>
-                            <th>Date Received</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for inquiry in recent_inquiries %}
-                        {% set initials = (inquiry['customer_name'].split()[0][0] ~ (inquiry['customer_name'].split()[-1][0] if inquiry['customer_name'].split()|length > 1 else ''))|upper %}
-                        <tr>
-                            <td><span class="order-id">#VM-{{ '%04d' % inquiry['id'] }}</span></td>
-                            <td>
-                                <div class="customer-cell">
-                                    <div class="cust-avatar" style="background: var(--primary); color: #000;">{{ initials }}</div>
-                                    <div>
-                                        <div class="cust-name">{{ inquiry['customer_name'] }}</div>
-                                        <div class="cust-email">{{ inquiry['customer_email'] }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{ inquiry['subject'] or 'General Inquiry' }}</td>
-                            <td>
-                                <span class="badge-status {{ inquiry['status'] }}">{{ inquiry['status'] }}</span>
-                            </td>
-                            <td class="order-date">{{ inquiry['created_at'][:16] }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">
-                                No inquiries received yet.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+      <div class="admin-table-header">
+        <h3 class="admin-table-title">
+          <i class="bi bi-inbox me-2 text-orange"></i>Recent Inquiries
+        </h3>
+        <div class="d-flex align-items-center gap-2">
+          {% if new_inquiries is defined and new_inquiries > 0 %}
+            <span class="badge badge-new">{{ new_inquiries }} new</span>
+          {% endif %}
+          <a href="{{ url_for('admin.inquiries') }}" class="btn btn-secondary btn-sm"
+             style="font-size:0.75rem;">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
         </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table admin-table mb-0">
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Name</th>
+              <th>Company</th>
+              <th>Service</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Received</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for inquiry in recent_inquiries %}
+            <tr>
+              <td>
+                <span style="font-family:monospace; font-size:0.8rem; color:var(--dc-text-muted);">
+                  #DC-{{ '%04d' % inquiry.id }}
+                </span>
+              </td>
+              <td>
+                <div style="font-weight:600; color:var(--dc-white);">{{ inquiry.full_name }}</div>
+                <div style="font-size:0.78rem; color:var(--dc-text-muted);">{{ inquiry.email }}</div>
+              </td>
+              <td>{{ inquiry.company or '—' }}</td>
+              <td>
+                <span style="font-size:0.8rem;">
+                  {{ inquiry.service_type | replace('_', ' ') | title }}
+                </span>
+              </td>
+              <td>
+                <a href="tel:{{ inquiry.phone }}" style="color:var(--dc-text); font-size:0.875rem;">
+                  {{ inquiry.phone }}
+                </a>
+              </td>
+              <td>
+                {% if inquiry.status == 'new' %}
+                  <span class="badge badge-new">New</span>
+                {% elif inquiry.status == 'open' %}
+                  <span class="badge badge-open">Open</span>
+                {% elif inquiry.status == 'replied' %}
+                  <span class="badge badge-replied">Replied</span>
+                {% else %}
+                  <span class="badge badge-closed">Closed</span>
+                {% endif %}
+              </td>
+              <td style="color:var(--dc-text-muted); font-size:0.8rem; white-space:nowrap;">
+                {{ inquiry.created_at.strftime('%d %b %Y') if inquiry.created_at else '—' }}
+              </td>
+              <td>
+                <div class="d-flex gap-1">
+                  <a href="{{ url_for('admin.view_inquiry', id=inquiry.id) }}"
+                     class="btn btn-secondary btn-sm" style="font-size:0.7rem; padding:0.25rem 0.6rem;"
+                     title="View">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="mailto:{{ inquiry.email }}"
+                     class="btn btn-dc-primary btn-sm" style="font-size:0.7rem; padding:0.25rem 0.6rem;"
+                     title="Reply by email">
+                    <i class="bi bi-reply-fill"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="8" class="text-center py-5" style="color:var(--dc-text-muted);">
+                <i class="bi bi-inbox d-block mb-2" style="font-size:2rem; opacity:0.4;"></i>
+                No inquiries received yet. They will appear here once the contact form is submitted.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div><!-- /table-responsive -->
+
+    </div><!-- /admin-table-wrap -->
+  </div>
+</div><!-- /row -->
+
+<!-- ── QUICK ACTIONS ──────────────────────────────────────── -->
+<div class="row g-3 mt-1">
+
+  <div class="col-12">
+    <div style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+                color:var(--dc-text-subtle); margin-bottom:0.75rem;">
+      Quick Actions
     </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.service_form') }}"
+       class="card p-3 text-center text-decoration-none"
+       style="border:1px solid var(--dc-steel); border-top:2px solid var(--dc-orange);
+              background:var(--dc-surface-2); transition:border-color 0.18s, box-shadow 0.18s;"
+       onmouseover="this.style.borderColor='var(--dc-orange)'"
+       onmouseout="this.style.borderTopColor='var(--dc-orange)'; this.style.borderColor='var(--dc-steel)'; this.style.borderTopColor='var(--dc-orange)'">
+      <i class="bi bi-plus-circle-fill text-orange d-block mb-2" style="font-size:1.5rem;"></i>
+      <div style="font-size:0.8rem; font-weight:600; color:var(--dc-text);">Add Service</div>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.projects') }}"
+       class="card p-3 text-center text-decoration-none"
+       style="border:1px solid var(--dc-steel); background:var(--dc-surface-2);">
+      <i class="bi bi-building-check text-orange d-block mb-2" style="font-size:1.5rem;"></i>
+      <div style="font-size:0.8rem; font-weight:600; color:var(--dc-text);">Manage Projects</div>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.inquiries') }}"
+       class="card p-3 text-center text-decoration-none"
+       style="border:1px solid var(--dc-steel); background:var(--dc-surface-2);">
+      <i class="bi bi-inbox-fill text-orange d-block mb-2" style="font-size:1.5rem;"></i>
+      <div style="font-size:0.8rem; font-weight:600; color:var(--dc-text);">All Inquiries</div>
+    </a>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <a href="{{ url_for('admin.settings') }}"
+       class="card p-3 text-center text-decoration-none"
+       style="border:1px solid var(--dc-steel); background:var(--dc-surface-2);">
+      <i class="bi bi-gear-fill text-orange d-block mb-2" style="font-size:1.5rem;"></i>
+      <div style="font-size:0.8rem; font-weight:600; color:var(--dc-text);">Settings</div>
+    </a>
+  </div>
 
 </div>
+
 {% endblock %}

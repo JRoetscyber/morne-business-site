@@ -1,87 +1,301 @@
-{% extends 'admin/base.html' %}
-{% block title %}Inquiries — V&M Projects Admin{% endblock %}
-{% block page_title %}Inquiries{% endblock %}
-{% block page_crumb %}<span class="topbar-crumb">/ Manage Leads</span>{% endblock %}
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+  {% if lead %}Inquiry #DC-{{ '%04d' % lead.id }}{% else %}Inquiries{% endif %}
+{% endblock %}
+{% block page_title %}
+  {% if lead %}Inquiry #DC-{{ '%04d' % lead.id }}{% else %}Inquiries{% endif %}
+{% endblock %}
 
 {% block content %}
 
-<div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-2">
-    <div>
-        <h1 class="page-heading">Client Inquiries</h1>
-        <p class="page-sub">{{ inquiries|length }} total inquiry leads received.</p>
+{% if lead %}
+<!-- ══════════════════════════════════════════════════════════
+     SINGLE INQUIRY DETAIL VIEW
+═══════════════════════════════════════════════════════════ -->
+
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb" style="background:none; padding:0; margin:0; font-size:0.85rem;">
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('admin.inquiries') }}" style="color:var(--dc-orange);">
+        <i class="bi bi-arrow-left me-1"></i>Inquiries
+      </a>
+    </li>
+    <li class="breadcrumb-item active" style="color:var(--dc-text-muted);">
+      #DC-{{ '%04d' % lead.id }}
+    </li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+
+  <!-- ── Main Info ────────────────────────────────────────────── -->
+  <div class="col-lg-8">
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3 class="admin-table-title">
+          <i class="bi bi-person-fill me-2 text-orange"></i>Inquiry Details
+        </h3>
+        {% if lead.status == 'new' %}
+          <span class="badge badge-new">New</span>
+        {% elif lead.status == 'open' %}
+          <span class="badge badge-open">Open</span>
+        {% elif lead.status == 'replied' %}
+          <span class="badge badge-replied">Replied</span>
+        {% else %}
+          <span class="badge badge-closed">Closed</span>
+        {% endif %}
+      </div>
+      <div style="padding:1.5rem;">
+        <div class="row g-3">
+
+          <div class="col-sm-6">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.25rem;">Full Name</div>
+            <div style="font-size:0.95rem; font-weight:600; color:var(--dc-white);">{{ lead.full_name }}</div>
+          </div>
+
+          <div class="col-sm-6">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.25rem;">Company</div>
+            <div style="font-size:0.9rem; color:var(--dc-text);">{{ lead.company or '—' }}</div>
+          </div>
+
+          <div class="col-sm-6">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.25rem;">Email</div>
+            <a href="mailto:{{ lead.email }}" style="color:var(--dc-orange); font-size:0.9rem;">
+              {{ lead.email }}
+            </a>
+          </div>
+
+          <div class="col-sm-6">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.25rem;">Phone</div>
+            <a href="tel:{{ lead.phone }}" style="color:var(--dc-text); font-size:0.9rem;">
+              {{ lead.phone }}
+            </a>
+          </div>
+
+          <div class="col-sm-6">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.25rem;">Service Requested</div>
+            <div style="font-size:0.9rem; color:var(--dc-text);">
+              {{ lead.service_type | replace('_', ' ') | title }}
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.25rem;">Received</div>
+            <div style="font-size:0.9rem; color:var(--dc-text-muted);">
+              {{ lead.created_at.strftime('%d %b %Y at %H:%M') if lead.created_at else '—' }}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--dc-text-subtle); margin-bottom:0.5rem;">Message</div>
+            <div style="background:var(--dc-surface-2); border:1px solid var(--dc-steel);
+                        border-left:3px solid var(--dc-orange); border-radius:var(--dc-radius-sm);
+                        padding:1rem 1.1rem; font-size:0.9rem; color:var(--dc-text);
+                        line-height:1.7; white-space:pre-wrap;">{{ lead.message }}</div>
+          </div>
+
+        </div>
+
+        <div class="d-flex gap-2 mt-4 flex-wrap">
+          <a href="mailto:{{ lead.email }}?subject=Re%3A%20Your%20Delcon%20Enquiry"
+             class="btn btn-dc-primary">
+            <i class="bi bi-reply-fill me-2"></i>Reply by Email
+          </a>
+          <a href="tel:{{ lead.phone | replace(' ', '') }}" class="btn btn-secondary">
+            <i class="bi bi-telephone-fill me-2"></i>Call {{ lead.phone }}
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- ── Sidebar: Status + Danger ──────────────────────────────── -->
+  <div class="col-lg-4">
+
+    <div class="admin-table-wrap mb-3">
+      <div class="admin-table-header">
+        <h3 class="admin-table-title">
+          <i class="bi bi-tag-fill me-2 text-orange"></i>Update Status
+        </h3>
+      </div>
+      <div style="padding:1rem;">
+        <form method="POST" action="{{ url_for('admin.update_inquiry_status', id=lead.id) }}">
+          <select name="status" class="admin-form-control mb-3">
+            {% for s in ['new', 'open', 'replied', 'closed'] %}
+              <option value="{{ s }}" {{ 'selected' if lead.status == s }}>
+                {{ s | title }}
+              </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-dc-primary w-100">
+            <i class="bi bi-floppy-fill me-2"></i>Save Status
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3 class="admin-table-title">
+          <i class="bi bi-exclamation-triangle-fill me-2" style="color:var(--dc-danger);"></i>Danger Zone
+        </h3>
+      </div>
+      <div style="padding:1rem;">
+        <p style="font-size:0.78rem; color:var(--dc-text-subtle); margin-bottom:0.75rem;">
+          Permanently removes this inquiry. This cannot be undone.
+        </p>
+        <form method="POST" action="{{ url_for('admin.delete_inquiry', id=lead.id) }}"
+              onsubmit="return confirm('Permanently delete inquiry #DC-{{ '%04d' % lead.id }}?')">
+          <button type="submit"
+                  style="display:flex; align-items:center; justify-content:center; gap:0.4rem;
+                         width:100%; padding:0.5rem 1rem; font-size:0.8rem; font-weight:600;
+                         background:var(--dc-danger-bg); border:1px solid var(--dc-danger);
+                         border-radius:var(--dc-radius-sm); color:var(--dc-danger); cursor:pointer;
+                         transition:background var(--dc-ease);"
+                  onmouseover="this.style.background='rgba(248,81,73,0.2)'"
+                  onmouseout="this.style.background='var(--dc-danger-bg)'">
+            <i class="bi bi-trash3-fill"></i> Delete Inquiry
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<div class="admin-card">
-    <div class="table-responsive">
-        <table class="table orders-table mb-0">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Prospect</th>
-                    <th>Contact Info</th>
-                    <th>Subject</th>
-                    <th>Message</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inquiry in inquiries %}
-                {% set initials = (inquiry['customer_name'].split()[0][0] ~ (inquiry['customer_name'].split()[-1][0] if inquiry['customer_name'].split()|length > 1 else ''))|upper %}
-                <tr>
-                    <td><span class="order-id">#VM-{{ '%04d' % inquiry['id'] }}</span></td>
-                    <td>
-                        <div class="customer-cell">
-                            <div class="cust-avatar">{{ initials }}</div>
-                            <div class="cust-name">{{ inquiry['customer_name'] }}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="cust-email"><i class="bi bi-envelope me-1"></i>{{ inquiry['customer_email'] }}</div>
-                        {% if inquiry['customer_phone'] %}
-                        <div class="cust-email"><i class="bi bi-telephone me-1"></i>{{ inquiry['customer_phone'] }}</div>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div style="font-size:0.8rem; font-weight: 700;">{{ inquiry['subject'] or 'General Inquiry' }}</div>
-                        <div class="order-date" style="font-size: 0.7rem;">{{ inquiry['created_at'][:16] }}</div>
-                    </td>
-                    <td>
-                        <div style="font-size:0.75rem; color:var(--text-muted); max-width: 300px; white-space: normal;">
-                            {{ inquiry['message'] }}
-                        </div>
-                    </td>
-                    <td>
-                        <span class="badge-status {{ inquiry['status'] }}">{{ inquiry['status'] }}</span>
-                    </td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            {% if inquiry['status'] == 'new' %}
-                            <form method="POST" action="{{ url_for('admin.update_inquiry_status_route', inquiry_id=inquiry['id'], status='read') }}">
-                                <button type="submit" class="tbl-action-btn" title="Mark as Read">
-                                    <i class="bi bi-check2-all"></i>
-                                </button>
-                            </form>
-                            {% endif %}
-                            <form method="POST" action="{{ url_for('admin.delete_inquiry_route', inquiry_id=inquiry['id']) }}"
-                                  onsubmit="return confirm('Delete this inquiry?')">
-                                <button type="submit" class="tbl-action-btn" style="color:#D08E8C;" title="Delete">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted);">
-                        No inquiries received yet.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+{% else %}
+<!-- ══════════════════════════════════════════════════════════
+     INQUIRY LIST VIEW
+═══════════════════════════════════════════════════════════ -->
+
+<div class="mb-4">
+  <p style="color:var(--dc-text-muted); font-size:0.875rem; margin:0;">
+    All inbound contact form submissions. Click a row to view the full message.
+  </p>
 </div>
+
+<!-- Status filter tabs -->
+<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+  {% set filters = [
+    ('', 'All', status_counts.get('all', 0)),
+    ('new', 'New', status_counts.get('new', 0)),
+    ('open', 'Open', status_counts.get('open', 0)),
+    ('replied', 'Replied', status_counts.get('replied', 0)),
+    ('closed', 'Closed', status_counts.get('closed', 0)),
+  ] %}
+  {% for val, label, count in filters %}
+    {% set is_active = (status_filter == val) %}
+    <a href="{{ url_for('admin.inquiries') }}{% if val %}?status={{ val }}{% endif %}"
+       style="display:inline-flex; align-items:center; gap:0.4rem;
+              padding:0.35rem 0.85rem; border-radius:2rem; font-size:0.78rem; font-weight:600;
+              border:1px solid {{ 'var(--dc-orange)' if is_active else 'var(--dc-steel)' }};
+              background:{{ 'var(--dc-orange-subtle)' if is_active else 'var(--dc-surface-2)' }};
+              color:{{ 'var(--dc-orange)' if is_active else 'var(--dc-text-muted)' }};
+              text-decoration:none; transition:all 0.15s;">
+      {{ label }}
+      <span style="background:{{ 'var(--dc-orange)' if is_active else 'var(--dc-steel)' }};
+                   color:{{ 'var(--dc-black)' if is_active else 'var(--dc-text)' }};
+                   border-radius:1rem; padding:0.05rem 0.45rem;
+                   font-size:0.7rem; font-weight:700;">{{ count }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+<div class="admin-table-wrap">
+  <div class="table-responsive">
+    <table class="table admin-table mb-0">
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Name / Company</th>
+          <th>Service</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Received</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inq in inquiries %}
+        <tr style="cursor:pointer;"
+            onclick="window.location='{{ url_for('admin.view_inquiry', id=inq.id) }}'">
+          <td onclick="event.stopPropagation()">
+            <span style="font-family:monospace; font-size:0.8rem; color:var(--dc-text-muted);">
+              #DC-{{ '%04d' % inq.id }}
+            </span>
+          </td>
+          <td>
+            <div style="font-weight:600; color:var(--dc-white); font-size:0.875rem;">
+              {{ inq.full_name }}
+            </div>
+            <div style="font-size:0.75rem; color:var(--dc-text-muted);">
+              {% if inq.company %}{{ inq.company }} &bull; {% endif %}{{ inq.email }}
+            </div>
+          </td>
+          <td style="font-size:0.85rem;">
+            {{ inq.service_type | replace('_', ' ') | title }}
+          </td>
+          <td>
+            <a href="tel:{{ inq.phone | replace(' ', '') }}"
+               style="color:var(--dc-text); font-size:0.875rem;"
+               onclick="event.stopPropagation()">{{ inq.phone }}</a>
+          </td>
+          <td>
+            {% if inq.status == 'new' %}
+              <span class="badge badge-new">New</span>
+            {% elif inq.status == 'open' %}
+              <span class="badge badge-open">Open</span>
+            {% elif inq.status == 'replied' %}
+              <span class="badge badge-replied">Replied</span>
+            {% else %}
+              <span class="badge badge-closed">Closed</span>
+            {% endif %}
+          </td>
+          <td style="color:var(--dc-text-muted); font-size:0.8rem; white-space:nowrap;">
+            {{ inq.created_at.strftime('%d %b %Y') if inq.created_at else '—' }}
+          </td>
+          <td onclick="event.stopPropagation()">
+            <div class="d-flex gap-1">
+              <a href="{{ url_for('admin.view_inquiry', id=inq.id) }}"
+                 class="btn btn-secondary btn-sm"
+                 style="font-size:0.7rem; padding:0.25rem 0.6rem;" title="View full inquiry">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="mailto:{{ inq.email }}?subject=Re%3A%20Your%20Delcon%20Enquiry"
+                 class="btn btn-dc-primary btn-sm"
+                 style="font-size:0.7rem; padding:0.25rem 0.6rem;" title="Reply by email">
+                <i class="bi bi-reply-fill"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center py-5" style="color:var(--dc-text-subtle);">
+            <i class="bi bi-inbox d-block mb-2" style="font-size:2.5rem; opacity:0.3;"></i>
+            {% if status_filter %}
+              No <strong>{{ status_filter }}</strong> inquiries found.
+              <a href="{{ url_for('admin.inquiries') }}"
+                 style="color:var(--dc-orange); margin-left:0.3em;">Show all</a>
+            {% else %}
+              No inquiries yet. Submissions will appear here once the contact form is used.
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endif %}
+
 {% endblock %}

@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}Projects — Completed Infrastructure Works | Delcon{% endblock %}
+{% block meta_description %}View Delcon's portfolio of completed pipe jacking, HDD, HDPE welding, and general infrastructure projects across South Africa. Level-2 BBBEE contractor.{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE HERO
+═══════════════════════════════════════════════════════════ -->
+<section class="service-hero" aria-label="Projects overview">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <span class="dc-section-label">Our Track Record</span>
+        <h1 class="mt-1 mb-3">Completed <span class="text-orange">Projects</span></h1>
+        <p class="lead" style="max-width:580px;">
+          A selection of pipe jacking, HDD, HDPE, and civil infrastructure
+          works delivered for municipalities, government bodies, and
+          private-sector clients across South Africa.
+        </p>
+      </div>
+      <div class="col-lg-4 d-flex justify-content-lg-end">
+        <a href="{{ url_for('main.contact') }}" class="btn btn-dc-primary btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Start Your Project
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FILTER BAR
+═══════════════════════════════════════════════════════════ -->
+<div style="background:var(--dc-black); border-bottom:1px solid var(--dc-steel); padding:1rem 0; position:sticky; top:68px; z-index:50;">
+  <div class="container">
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <span style="font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--dc-text-subtle); margin-right:0.5rem;">
+        Filter:
+      </span>
+      <button class="btn btn-sm dc-filter-btn active" data-filter="all">All Projects</button>
+      <button class="btn btn-sm dc-filter-btn" data-filter="pipe_jacking">Pipe Jacking</button>
+      <button class="btn btn-sm dc-filter-btn" data-filter="hdd">HDD</button>
+      <button class="btn btn-sm dc-filter-btn" data-filter="hdpe">HDPE Welding</button>
+      <button class="btn btn-sm dc-filter-btn" data-filter="infrastructure">Infrastructure</button>
+      <button class="btn btn-sm dc-filter-btn" data-filter="grouting">Grouting</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROJECTS GRID
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface" aria-label="Projects grid">
+  <div class="container">
+
+    {% if projects %}
+
+      <!-- Project count -->
+      <p style="font-size:0.8rem; color:var(--dc-text-subtle); margin-bottom:2rem;" id="projectCount">
+        Showing <strong style="color:var(--dc-text);">{{ projects | length }}</strong> project{{ 's' if projects | length != 1 else '' }}
+      </p>
+
+      <div class="row g-4" id="projectsGrid">
+        {% for project in projects %}
+        <div class="col-lg-4 col-md-6 project-item" data-type="{{ project.service_type | default('general') }}">
+          <div class="card h-100" style="border:1px solid var(--dc-steel); background:var(--dc-surface-2); overflow:hidden; transition:border-color 0.18s, box-shadow 0.18s;">
+
+            <!-- Project image -->
+            <div style="height:210px; background:var(--dc-surface-3); overflow:hidden; position:relative;">
+              {% if project.image_path %}
+                <img src="{{ url_for('static', filename=project.image_path) }}"
+                     alt="{{ project.title }}"
+                     style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
+              {% else %}
+                <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center;
+                            justify-content:center; gap:0.5rem; color:var(--dc-text-subtle);">
+                  <i class="bi bi-building" style="font-size:2.5rem; opacity:0.3;"></i>
+                  <span style="font-size:0.75rem; opacity:0.5;">No image</span>
+                </div>
+              {% endif %}
+
+              <!-- Service type badge -->
+              <div style="position:absolute; top:0.75rem; left:0.75rem;">
+                {% set service_labels = {
+                  'pipe_jacking': 'Pipe Jacking',
+                  'hdd': 'HDD',
+                  'hdpe': 'HDPE Welding',
+                  'infrastructure': 'Infrastructure',
+                  'grouting': 'Grouting'
+                } %}
+                <span class="badge" style="background:var(--dc-black); border:1px solid var(--dc-orange);
+                                           color:var(--dc-orange); font-size:0.68rem; letter-spacing:0.06em;">
+                  {{ service_labels.get(project.service_type, project.service_type | title) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Card body -->
+            <div class="card-body p-4">
+              <h3 class="card-title h5 mb-1">{{ project.title }}</h3>
+
+              <div class="d-flex flex-wrap gap-3 mb-3" style="font-size:0.78rem; color:var(--dc-text-muted);">
+                {% if project.location %}
+                  <span>
+                    <i class="bi bi-geo-alt-fill text-orange me-1"></i>{{ project.location }}
+                  </span>
+                {% endif %}
+                {% if project.client %}
+                  <span>
+                    <i class="bi bi-building text-orange me-1"></i>{{ project.client }}
+                  </span>
+                {% endif %}
+                {% if project.completed_date %}
+                  <span>
+                    <i class="bi bi-calendar3 text-orange me-1"></i>
+                    {{ project.completed_date.strftime('%b %Y') if project.completed_date else '' }}
+                  </span>
+                {% endif %}
+              </div>
+
+              {% if project.description %}
+                <p class="card-text" style="font-size:0.9rem; color:var(--dc-text-muted); line-height:1.7; -webkit-line-clamp:3; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;">
+                  {{ project.description }}
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- Card footer -->
+            {% if project.pipe_size or project.drive_length or project.value %}
+            <div class="card-footer p-3">
+              <div class="d-flex flex-wrap gap-3">
+                {% if project.pipe_size %}
+                  <div style="font-size:0.72rem;">
+                    <span style="color:var(--dc-text-subtle); text-transform:uppercase; letter-spacing:0.07em;">Size</span><br>
+                    <strong style="color:var(--dc-orange);">{{ project.pipe_size }}</strong>
+                  </div>
+                {% endif %}
+                {% if project.drive_length %}
+                  <div style="font-size:0.72rem;">
+                    <span style="color:var(--dc-text-subtle); text-transform:uppercase; letter-spacing:0.07em;">Length</span><br>
+                    <strong style="color:var(--dc-white);">{{ project.drive_length }}</strong>
+                  </div>
+                {% endif %}
+                {% if project.value %}
+                  <div style="font-size:0.72rem;">
+                    <span style="color:var(--dc-text-subtle); text-transform:uppercase; letter-spacing:0.07em;">Value</span><br>
+                    <strong style="color:var(--dc-white);">{{ project.value }}</strong>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+        {% endfor %}
+      </div><!-- /row -->
+
+      <!-- No results after filter -->
+      <div id="noResults" style="display:none; text-align:center; padding:4rem 0;">
+        <i class="bi bi-search" style="font-size:2.5rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+        <p style="color:var(--dc-text-muted);">No projects match this filter. Try another category.</p>
+      </div>
+
+    {% else %}
+
+      <!-- Empty state -->
+      <div class="text-center py-5">
+        <i class="bi bi-building" style="font-size:3.5rem; opacity:0.2; display:block; margin-bottom:1.5rem;"></i>
+        <h3 style="color:var(--dc-text-muted); font-weight:600; margin-bottom:0.5rem;">No Projects Yet</h3>
+        <p style="color:var(--dc-text-subtle); max-width:380px; margin:0 auto 2rem;">
+          Project portfolio entries will appear here once they're added
+          through the admin dashboard.
+        </p>
+        <a href="{{ url_for('main.contact') }}" class="btn btn-dc-primary btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Enquire About Our Work
+        </a>
+      </div>
+
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BOTTOM CTA
+═══════════════════════════════════════════════════════════ -->
+<section class="section-dark" aria-label="Project CTA">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <span class="dc-section-label">Work With Us</span>
+        <h2 class="mt-1">Have a Project That Needs <span class="text-orange">Trenchless Solutions?</span></h2>
+        <p class="lead mt-3" style="max-width:560px;">
+          Our estimators will assess your site and project scope and come
+          back with a detailed, competitive quotation — typically within 48 hours.
+        </p>
+      </div>
+      <div class="col-lg-4 d-flex flex-column flex-sm-row flex-lg-column gap-3 justify-content-lg-end">
+        <a href="{{ url_for('main.contact') }}" class="btn btn-dc-primary btn-cta">
+          <i class="bi bi-send-fill me-2"></i>Request a Quote
+        </a>
+        <a href="{{ url_for('main.services') }}" class="btn btn-dc-outline btn-cta">
+          <i class="bi bi-tools me-2"></i>View Services
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    var btns = document.querySelectorAll('.dc-filter-btn');
+    var items = document.querySelectorAll('.project-item');
+    var noResults = document.getElementById('noResults');
+    var countEl = document.getElementById('projectCount');
+
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        btns.forEach(function (b) { b.classList.remove('active'); });
+        this.classList.add('active');
+
+        var filter = this.dataset.filter;
+        var visible = 0;
+
+        items.forEach(function (item) {
+          var match = filter === 'all' || item.dataset.type === filter;
+          item.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+
+        if (countEl) {
+          countEl.innerHTML = 'Showing <strong style="color:var(--dc-text);">' + visible +
+            '</strong> project' + (visible !== 1 ? 's' : '');
+        }
+
+        if (noResults) {
+          noResults.style.display = visible === 0 ? 'block' : 'none';
+        }
+      });
+    });
+
+    /* Hover image scale */
+    document.querySelectorAll('#projectsGrid .card').forEach(function (card) {
+      var img = card.querySelector('img');
+      if (!img) return;
+      card.addEventListener('mouseenter', function () { img.style.transform = 'scale(1.04)'; });
+      card.addEventListener('mouseleave', function () { img.style.transform = 'scale(1)'; });
+    });
+  })();
+</script>
+
+<style>
+  .dc-filter-btn {
+    background: var(--dc-surface-2);
+    border: 1px solid var(--dc-steel);
+    color: var(--dc-text-muted);
+    border-radius: var(--dc-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.85rem;
+    transition: background-color 0.18s, border-color 0.18s, color 0.18s;
+  }
+  .dc-filter-btn:hover {
+    border-color: var(--dc-steel-light);
+    color: var(--dc-white);
+    background: var(--dc-surface-3);
+  }
+  .dc-filter-btn.active {
+    background: var(--dc-orange);
+    border-color: var(--dc-orange);
+    color: var(--dc-white);
+  }
+</style>
+{% endblock %}

@@ -1,121 +1,267 @@
-{% extends 'admin/base.html' %}
-{% block title %}Projects — V&M Projects Admin{% endblock %}
-{% block page_title %}Projects{% endblock %}
-{% block page_crumb %}<span class="topbar-crumb">/ Portfolio Management</span>{% endblock %}
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+  {% if project is defined %}
+    {{ 'Edit: ' + project.title if project.id else 'Add Project' }}
+  {% else %}Projects{% endif %}
+{% endblock %}
+{% block page_title %}
+  {% if project is defined %}
+    {{ 'Edit Project' if project.id else 'Add Project' }}
+  {% else %}Projects{% endif %}
+{% endblock %}
 
 {% block content %}
 
-<div class="d-flex align-items-end justify-content-between mb-4 flex-wrap gap-2">
-    <div>
-        <h1 class="page-heading">Projects</h1>
-        <p class="page-sub">{{ projects|length }} project{{ 's' if projects|length != 1 else '' }} in your portfolio.</p>
-    </div>
-    <button class="btn-admin-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">
-        <i class="bi bi-plus-lg me-1"></i> Add Project
-    </button>
-</div>
+{% if project is defined %}
+<!-- ══════════════════════════════════════════════════════════
+     PROJECT FORM  (add / edit)
+═══════════════════════════════════════════════════════════ -->
 
-<div class="admin-card">
-    <div class="table-responsive">
-        <table class="table orders-table mb-0">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Project Title</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in projects %}
-                <tr>
-                    <td>
-                        {% if p['image_path'] %}
-                        <img src="{{ url_for('static', filename=p['image_path']) }}"
-                             alt="{{ p['title'] }}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">
-                        {% else %}
-                        <div style="width:40px;height:40px;background:var(--bg-accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--text-muted);">
-                            <i class="bi bi-building"></i>
-                        </div>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div style="font-size:0.84rem;font-weight:700;color:var(--text-primary);">{{ p['title'] }}</div>
-                    </td>
-                    <td>
-                        <span class="badge-status new">
-                            {{ p['category'] }}
-                        </span>
-                    </td>
-                    <td class="order-date" style="font-size:0.78rem;">{{ p['completion_date'] }}</td>
-                    <td>
-                        <div style="font-size:0.75rem;color:var(--text-muted);max-width:300px;">
-                            {{ (p['description'] or '')[:100] }}{% if p['description'] and p['description']|length > 100 %}…{% endif %}
-                        </div>
-                    </td>
-                    <td>
-                        <form method="POST" action="{{ url_for('admin.delete_project_route', project_id=p['id']) }}" 
-                              onsubmit="return confirm('Delete this project?')">
-                            <button type="submit" class="tbl-action-btn" style="color:#D08E8C;" title="Delete">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="6" style="text-align:center;padding:3rem;color:var(--text-muted);">
-                        No projects found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb" style="background:none; padding:0; margin:0; font-size:0.85rem;">
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('admin.projects') }}" style="color:var(--dc-orange);">
+        <i class="bi bi-arrow-left me-1"></i>Projects
+      </a>
+    </li>
+    <li class="breadcrumb-item active" style="color:var(--dc-text-muted);">
+      {{ 'Edit: ' + project.title if project.id else 'New Project' }}
+    </li>
+  </ol>
+</nav>
 
-<!-- ── ADD PROJECT MODAL ─────────────────────────────────────────────────── -->
-<div class="modal fade" id="addProjectModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background:var(--bg-panel);border:1px solid var(--glass-border);border-radius:14px;">
-            <div class="modal-header" style="border-color:var(--glass-border);">
-                <h5 class="modal-title" style="font-family:Montserrat;color:var(--text-primary);">ADD NEW PROJECT</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="{{ url_for('admin.add_project_route') }}" enctype="multipart/form-data">
-                <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
-                    <div>
-                        <label class="admin-label">Project Title *</label>
-                        <input type="text" name="title" class="admin-input" placeholder="e.g. Corporate Office Renovation" required>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-sm-6">
-                            <label class="admin-label">Category</label>
-                            <input type="text" name="category" class="admin-input" placeholder="e.g. Commercial">
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="admin-label">Completion Date</label>
-                            <input type="text" name="completion_date" class="admin-input" placeholder="e.g. Feb 2026">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="admin-label">Description</label>
-                        <textarea name="description" class="admin-textarea" rows="4"></textarea>
-                    </div>
-                    <div>
-                        <label class="admin-label">Project Image</label>
-                        <input type="file" name="image" class="admin-input">
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-color:var(--glass-border);">
-                    <button type="button" class="btn-admin-outline" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-admin-primary">Save Project</button>
-                </div>
-            </form>
+<div class="admin-table-wrap">
+  <div class="admin-table-header">
+    <h3 class="admin-table-title">
+      <i class="bi bi-building-check me-2 text-orange"></i>
+      {{ 'Edit Project' if project.id else 'Add New Project' }}
+    </h3>
+    <a href="{{ url_for('admin.projects') }}" class="btn btn-secondary btn-sm">
+      <i class="bi bi-x-lg me-1"></i>Cancel
+    </a>
+  </div>
+
+  <div style="padding:1.5rem;">
+    <form method="POST"
+          action="{{ url_for('admin.project_form', id=project.id) if project.id else url_for('admin.project_form') }}"
+          novalidate>
+
+      <div class="row g-3">
+
+        <div class="col-12">
+          <label class="admin-form-label">
+            Project Title <span style="color:var(--dc-orange);">*</span>
+          </label>
+          <input type="text" class="admin-form-control" name="title"
+                 value="{{ project.title or '' }}"
+                 placeholder="e.g. N2 Highway Storm Drain Crossing — Port Elizabeth"
+                 required>
         </div>
-    </div>
+
+        <div class="col-md-6">
+          <label class="admin-form-label">Service Type</label>
+          <select class="admin-form-control" name="service_type">
+            {% set svc_types = [
+              ('pipe_jacking',   'Pipe Jacking'),
+              ('hdd',            'HDD Drilling'),
+              ('hdpe',           'HDPE Welding'),
+              ('infrastructure', 'General Infrastructure'),
+              ('grouting',       'Grouting & Guniting'),
+            ] %}
+            {% for val, label in svc_types %}
+              <option value="{{ val }}" {{ 'selected' if project.service_type == val }}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="admin-form-label">Location</label>
+          <input type="text" class="admin-form-control" name="location"
+                 value="{{ project.location or '' }}"
+                 placeholder="e.g. Cape Town, Western Cape">
+        </div>
+
+        <div class="col-md-6">
+          <label class="admin-form-label">Client</label>
+          <input type="text" class="admin-form-control" name="client"
+                 value="{{ project.client or '' }}"
+                 placeholder="e.g. City of Cape Town">
+        </div>
+
+        <div class="col-md-6">
+          <label class="admin-form-label">Completion Date</label>
+          <input type="date" class="admin-form-control" name="completed_date"
+                 value="{{ project.completed_date.strftime('%Y-%m-%d') if project.completed_date else '' }}">
+        </div>
+
+        <div class="col-md-4">
+          <label class="admin-form-label">Pipe / Casing Size</label>
+          <input type="text" class="admin-form-control" name="pipe_size"
+                 value="{{ project.pipe_size or '' }}"
+                 placeholder="e.g. 1200mm OD">
+        </div>
+
+        <div class="col-md-4">
+          <label class="admin-form-label">Drive Length</label>
+          <input type="text" class="admin-form-control" name="drive_length"
+                 value="{{ project.drive_length or '' }}"
+                 placeholder="e.g. 85m">
+        </div>
+
+        <div class="col-md-4">
+          <label class="admin-form-label">Contract Value</label>
+          <input type="text" class="admin-form-control" name="value"
+                 value="{{ project.value or '' }}"
+                 placeholder="e.g. R2.4M">
+        </div>
+
+        <div class="col-12">
+          <label class="admin-form-label">Description</label>
+          <textarea class="admin-form-control" name="description" rows="4"
+                    placeholder="Brief project overview, scope delivered, and outcomes achieved…">{{ project.description or '' }}</textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label class="admin-form-label">Sort Order</label>
+          <input type="number" class="admin-form-control" name="sort_order"
+                 value="{{ project.sort_order if project.sort_order is not none else 0 }}" min="0">
+          <small style="color:var(--dc-text-subtle); font-size:0.72rem;">
+            Lower number = appears first on the public Projects page.
+          </small>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end" style="padding-bottom:0.6rem;">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="is_active"
+                   id="proj_is_active"
+                   {% if project.id %}
+                     {{ 'checked' if project.is_active }}
+                   {% else %}
+                     checked
+                   {% endif %}>
+            <label class="form-check-label admin-form-label" for="proj_is_active"
+                   style="margin-bottom:0;">
+              Visible on public site
+            </label>
+          </div>
+        </div>
+
+        <div class="col-12 pt-2 d-flex gap-2 flex-wrap">
+          <button type="submit" class="btn btn-dc-primary">
+            <i class="bi bi-floppy-fill me-2"></i>
+            {{ 'Update Project' if project.id else 'Save Project' }}
+          </button>
+          <a href="{{ url_for('admin.projects') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+
+      </div>
+    </form>
+  </div>
 </div>
+
+{% else %}
+<!-- ══════════════════════════════════════════════════════════
+     PROJECT LIST VIEW
+═══════════════════════════════════════════════════════════ -->
+
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+  <p style="color:var(--dc-text-muted); font-size:0.875rem; margin:0;">
+    Portfolio entries displayed on the public Projects page. Drag sort order to reorder.
+  </p>
+  <a href="{{ url_for('admin.project_form') }}" class="btn btn-dc-primary">
+    <i class="bi bi-plus-lg me-2"></i>Add Project
+  </a>
+</div>
+
+<div class="admin-table-wrap">
+  <div class="table-responsive">
+    <table class="table admin-table mb-0">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Location</th>
+          <th>Client</th>
+          <th>Completed</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in projects %}
+        <tr>
+          <td style="font-family:monospace; color:var(--dc-text-subtle); font-size:0.8rem; text-align:center;">
+            {{ p.sort_order }}
+          </td>
+          <td>
+            <div style="font-weight:600; color:var(--dc-white); font-size:0.875rem;">{{ p.title }}</div>
+            {% if p.pipe_size or p.drive_length or p.value %}
+              <div style="font-size:0.72rem; color:var(--dc-text-subtle); margin-top:0.1rem;">
+                {% if p.pipe_size %}<span>{{ p.pipe_size }}</span>{% endif %}
+                {% if p.drive_length %}<span class="ms-2">{{ p.drive_length }}</span>{% endif %}
+                {% if p.value %}<span class="ms-2">{{ p.value }}</span>{% endif %}
+              </div>
+            {% endif %}
+          </td>
+          <td style="font-size:0.82rem; color:var(--dc-text-muted);">
+            {{ p.service_type | replace('_', ' ') | title if p.service_type else '—' }}
+          </td>
+          <td style="font-size:0.82rem; color:var(--dc-text-muted);">{{ p.location or '—' }}</td>
+          <td style="font-size:0.82rem; color:var(--dc-text-muted);">{{ p.client or '—' }}</td>
+          <td style="font-size:0.8rem; color:var(--dc-text-muted); white-space:nowrap;">
+            {{ p.completed_date.strftime('%b %Y') if p.completed_date else '—' }}
+          </td>
+          <td>
+            {% if p.is_active %}
+              <span class="badge"
+                    style="background:var(--dc-success-bg); border:1px solid var(--dc-success);
+                           color:var(--dc-success); font-size:0.68rem;">Live</span>
+            {% else %}
+              <span class="badge"
+                    style="background:var(--dc-surface-3); border:1px solid var(--dc-steel);
+                           color:var(--dc-text-muted); font-size:0.68rem;">Hidden</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <a href="{{ url_for('admin.project_form', id=p.id) }}"
+                 class="btn btn-secondary btn-sm"
+                 style="font-size:0.7rem; padding:0.25rem 0.6rem;" title="Edit">
+                <i class="bi bi-pencil-fill"></i>
+              </a>
+              <form method="POST" action="{{ url_for('admin.delete_project', id=p.id) }}"
+                    onsubmit="return confirm('Delete “{{ p.title | e }}”? This cannot be undone.')">
+                <button type="submit"
+                        class="btn btn-sm"
+                        style="font-size:0.7rem; padding:0.25rem 0.6rem;
+                               background:var(--dc-danger-bg); border:1px solid var(--dc-danger);
+                               color:var(--dc-danger); cursor:pointer;" title="Delete">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center py-5" style="color:var(--dc-text-subtle);">
+            <i class="bi bi-building d-block mb-2" style="font-size:2.5rem; opacity:0.3;"></i>
+            No projects added yet.
+            <a href="{{ url_for('admin.project_form') }}" style="color:var(--dc-orange);">
+              Add your first project
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endif %}
 
 {% endblock %}

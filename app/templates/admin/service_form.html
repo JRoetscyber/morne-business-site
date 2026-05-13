@@ -1,62 +1,278 @@
-{% extends 'admin/base.html' %}
-{% block title %}Edit Service — V&M Projects Admin{% endblock %}
-{% block page_title %}Edit Service{% endblock %}
-{% block page_crumb %}<span class="topbar-crumb">/ {{ service['title'] }}</span>{% endblock %}
+{% extends "admin/admin_base.html" %}
+
+{% block title %}
+  {% if service is defined %}
+    {{ 'Edit: ' + service.name if service.id else 'Add Service' }}
+  {% else %}Services{% endif %}
+{% endblock %}
+{% block page_title %}Services{% endblock %}
 
 {% block content %}
 
-<div class="mb-4">
-    <a href="{{ url_for('admin.services') }}" class="btn-admin-outline sm">
-        <i class="bi bi-arrow-left me-1"></i> Back to Services
-    </a>
-</div>
+<div class="row g-4">
 
-<div class="admin-card" style="max-width: 800px;">
-    <div class="admin-card-header">
-        <h5 class="admin-card-title">SERVICE DETAILS</h5>
-    </div>
-    <form method="POST" enctype="multipart/form-data" class="p-4">
-        <div style="display:flex;flex-direction:column;gap:1.5rem;">
-            <div>
-                <label class="admin-label">Service Title *</label>
-                <input type="text" name="title" class="admin-input" value="{{ service['title'] }}" required>
-            </div>
-            <div>
-                <label class="admin-label">Category *</label>
-                <input type="text" name="category" class="admin-input" value="{{ service['category'] }}" required>
-            </div>
-            <div>
-                <label class="admin-label">Short Description *</label>
-                <textarea name="short_description" class="admin-textarea" rows="2" required>{{ service['short_description'] }}</textarea>
-            </div>
-            <div>
-                <label class="admin-label">Long Description</label>
-                <textarea name="long_description" class="admin-textarea" rows="6">{{ service['long_description'] }}</textarea>
-            </div>
-            
-            <div class="row align-items-center">
-                <div class="col-sm-3">
-                    {% if service['image_path'] %}
-                    <img src="{{ url_for('static', filename=service['image_path']) }}"
-                         alt="" style="width:100%; border-radius:8px; border:1px solid var(--glass-border);">
-                    {% else %}
-                    <div style="width:100%; aspect-ratio:1; background:var(--bg-accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);">
-                        <i class="bi bi-image" style="font-size:2rem;"></i>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-sm-9">
-                    <label class="admin-label">Update Image</label>
-                    <input type="file" name="image" class="admin-input">
-                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem;">Leave blank to keep current image.</p>
-                </div>
-            </div>
+  <!-- ══════════════════════════════════════════════════════════
+       LEFT PANEL — service list
+  ══════════════════════════════════════════════════════════ -->
+  <div class="col-lg-4 col-xl-3">
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3 class="admin-table-title">
+          <i class="bi bi-tools me-2 text-orange"></i>Services
+        </h3>
+        <a href="{{ url_for('admin.service_form') }}"
+           class="btn btn-dc-primary btn-sm" style="font-size:0.72rem; padding:0.3rem 0.7rem;">
+          <i class="bi bi-plus-lg me-1"></i>New
+        </a>
+      </div>
 
-            <div class="mt-2">
-                <button type="submit" class="btn-admin-primary">Update Service</button>
-            </div>
+      {% if services %}
+        <ul style="list-style:none; margin:0; padding:0;">
+          {% for svc in services %}
+            <li style="border-bottom:1px solid var(--dc-steel);">
+              {% set selected = service is defined and service.id == svc.id %}
+              <a href="{{ url_for('admin.service_form', id=svc.id) }}"
+                 style="display:flex; align-items:center; justify-content:space-between;
+                        padding:0.75rem 1rem; text-decoration:none;
+                        border-left:3px solid {{ 'var(--dc-orange)' if selected else 'transparent' }};
+                        background:{{ 'var(--dc-orange-subtle)' if selected else 'transparent' }};
+                        transition:background var(--dc-ease);">
+                <div style="min-width:0;">
+                  <div style="font-size:0.875rem; font-weight:600; color:var(--dc-white);
+                              white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    {{ svc.name }}
+                  </div>
+                  <div style="font-size:0.7rem; color:var(--dc-text-subtle); font-family:monospace;">
+                    /{{ svc.slug }}
+                  </div>
+                </div>
+                <span style="width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-left:0.5rem;
+                             background:{{ 'var(--dc-success)' if svc.is_active else 'var(--dc-steel)' }};"
+                      title="{{ 'Active' if svc.is_active else 'Inactive' }}"></span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div style="padding:2rem; text-align:center; color:var(--dc-text-subtle); font-size:0.85rem;">
+          <i class="bi bi-tools d-block mb-2" style="font-size:2rem; opacity:0.25;"></i>
+          No services yet.
         </div>
-    </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       RIGHT PANEL — form or placeholder
+  ══════════════════════════════════════════════════════════ -->
+  <div class="col-lg-8 col-xl-9">
+
+    {% if service is defined %}
+    <!-- Service edit / add form -->
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h3 class="admin-table-title">
+          <i class="bi bi-pencil-fill me-2 text-orange"></i>
+          {{ 'Edit Service' if service.id else 'Add New Service' }}
+        </h3>
+        {% if service.id %}
+          <form method="POST" action="{{ url_for('admin.delete_service', id=service.id) }}"
+                onsubmit="return confirm('Permanently delete “{{ service.name | e }}”?')">
+            <button type="submit"
+                    style="display:inline-flex; align-items:center; gap:0.35rem;
+                           padding:0.3rem 0.7rem; font-size:0.72rem; font-weight:600;
+                           background:var(--dc-danger-bg); border:1px solid var(--dc-danger);
+                           border-radius:var(--dc-radius-sm); color:var(--dc-danger); cursor:pointer;">
+              <i class="bi bi-trash3-fill"></i> Delete
+            </button>
+          </form>
+        {% endif %}
+      </div>
+
+      <div style="padding:1.5rem;">
+        <form method="POST"
+              action="{{ url_for('admin.service_form', id=service.id) if service.id else url_for('admin.service_form') }}"
+              novalidate>
+
+          <div class="row g-3">
+
+            <!-- Name + Slug -->
+            <div class="col-md-8">
+              <label class="admin-form-label">
+                Service Name <span style="color:var(--dc-orange);">*</span>
+              </label>
+              <input type="text" class="admin-form-control" name="name"
+                     id="svc-name"
+                     value="{{ service.name or '' }}"
+                     placeholder="e.g. Pipe Jacking" required
+                     oninput="autoSlug(this)">
+            </div>
+
+            <div class="col-md-4">
+              <label class="admin-form-label">
+                URL Slug <span style="color:var(--dc-orange);">*</span>
+              </label>
+              <input type="text" class="admin-form-control" name="slug"
+                     id="svc-slug"
+                     value="{{ service.slug or '' }}"
+                     placeholder="pipe-jacking" required>
+            </div>
+
+            <!-- Category + Spec Range + Sort -->
+            <div class="col-md-5">
+              <label class="admin-form-label">Category</label>
+              <input type="text" class="admin-form-control" name="category"
+                     value="{{ service.category or '' }}"
+                     placeholder="e.g. Trenchless Technology">
+            </div>
+
+            <div class="col-md-4">
+              <label class="admin-form-label">Spec Range</label>
+              <input type="text" class="admin-form-control" name="spec_range"
+                     value="{{ service.spec_range or '' }}"
+                     placeholder="900mm – 2800mm">
+            </div>
+
+            <div class="col-md-3">
+              <label class="admin-form-label">Sort Order</label>
+              <input type="number" class="admin-form-control" name="sort_order"
+                     value="{{ service.sort_order if service.sort_order is not none else 0 }}" min="0">
+            </div>
+
+            <!-- Descriptions -->
+            <div class="col-12">
+              <label class="admin-form-label">Short Description</label>
+              <small style="display:block; font-size:0.72rem; color:var(--dc-text-subtle); margin-bottom:0.35rem;">
+                One or two sentences — used in card previews and the services listing.
+              </small>
+              <textarea class="admin-form-control" name="short_description" rows="2"
+                        placeholder="Brief, punchy summary of what this service delivers.">{{ service.short_description or '' }}</textarea>
+            </div>
+
+            <div class="col-12">
+              <label class="admin-form-label">Full Description</label>
+              <textarea class="admin-form-control" name="full_description" rows="5"
+                        placeholder="Detailed service description shown on the dedicated service page.">{{ service.full_description or '' }}</textarea>
+            </div>
+
+            <div class="col-12">
+              <label class="admin-form-label">Methodology</label>
+              <textarea class="admin-form-control" name="methodology" rows="3"
+                        placeholder="How the service is delivered — process, equipment, and quality standards.">{{ service.methodology or '' }}</textarea>
+            </div>
+
+            <!-- JSON list fields -->
+            <div class="col-md-4">
+              <label class="admin-form-label">Scope Items</label>
+              <small style="display:block; font-size:0.72rem; color:var(--dc-text-subtle); margin-bottom:0.35rem;">
+                One item per line
+              </small>
+              <textarea class="admin-form-control" name="scope_items" rows="7"
+                        placeholder="Launch pit excavation&#10;Jacking frame installation&#10;Liner pipe supply&#10;Spoil removal">{{ scope_items_text or '' }}</textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label class="admin-form-label">Technical Specs</label>
+              <small style="display:block; font-size:0.72rem; color:var(--dc-text-subtle); margin-bottom:0.35rem;">
+                One item per line
+              </small>
+              <textarea class="admin-form-control" name="specs" rows="7"
+                        placeholder="Diameter: 900mm – 2800mm&#10;Max single drive: 120m&#10;Grade tolerance: ±5mm">{{ specs_text or '' }}</textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label class="admin-form-label">Applications</label>
+              <small style="display:block; font-size:0.72rem; color:var(--dc-text-subtle); margin-bottom:0.35rem;">
+                One item per line
+              </small>
+              <textarea class="admin-form-control" name="applications" rows="7"
+                        placeholder="Storm water culverts&#10;Sewer outfalls&#10;Road crossings&#10;Railway underpasses">{{ applications_text or '' }}</textarea>
+            </div>
+
+            <!-- SEO -->
+            <div class="col-12">
+              <label class="admin-form-label">Meta Description</label>
+              <small style="display:block; font-size:0.72rem; color:var(--dc-text-subtle); margin-bottom:0.35rem;">
+                For search engines. Recommended: 130–160 characters.
+              </small>
+              <textarea class="admin-form-control" name="meta_description" rows="2"
+                        maxlength="320"
+                        placeholder="Delcon delivers expert pipe jacking across South Africa — 900mm to 2800mm diameter, minimal surface disruption.">{{ service.meta_description or '' }}</textarea>
+            </div>
+
+            <!-- Active toggle -->
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_active"
+                       id="svc_is_active"
+                       {% if service.id %}
+                         {{ 'checked' if service.is_active }}
+                       {% else %}
+                         checked
+                       {% endif %}>
+                <label class="form-check-label admin-form-label" for="svc_is_active"
+                       style="margin-bottom:0;">
+                  Active — visible in the navbar dropdown and public service listings
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 pt-2 d-flex gap-2 flex-wrap">
+              <button type="submit" class="btn btn-dc-primary">
+                <i class="bi bi-floppy-fill me-2"></i>
+                {{ 'Update Service' if service.id else 'Save Service' }}
+              </button>
+              <a href="{{ url_for('admin.services') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- No service selected — placeholder -->
+    <div class="admin-table-wrap"
+         style="min-height:320px; display:flex; align-items:center; justify-content:center;">
+      <div style="text-align:center; padding:4rem 2rem; color:var(--dc-text-subtle);">
+        <i class="bi bi-arrow-left-circle d-block mb-3"
+           style="font-size:3rem; color:var(--dc-orange); opacity:0.45;"></i>
+        <div style="font-weight:600; color:var(--dc-text-muted); margin-bottom:0.4rem;">
+          Select a service to edit
+        </div>
+        <div style="font-size:0.85rem; margin-bottom:1.5rem;">
+          Or create a new one to add it to the public site.
+        </div>
+        <a href="{{ url_for('admin.service_form') }}" class="btn btn-dc-primary">
+          <i class="bi bi-plus-lg me-2"></i>Add New Service
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  /* Auto-generate slug from name when adding a new service */
+  function autoSlug(nameInput) {
+    var slugInput = document.getElementById('svc-slug');
+    /* Only auto-fill if the user hasn't manually edited the slug */
+    if (slugInput.dataset.manual === 'true') return;
+    slugInput.value = nameInput.value
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
+  }
+  var slugEl = document.getElementById('svc-slug');
+  if (slugEl) {
+    slugEl.addEventListener('input', function () {
+      this.dataset.manual = 'true';
+    });
+  }
+</script>
 {% endblock %}

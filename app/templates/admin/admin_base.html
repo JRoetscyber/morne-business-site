@@ -1,149 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin — V&M Projects{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-    {% block extra_head %}{% endblock %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} — Delcon Portal</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Bootstrap 5.3 -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Delcon Admin CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+  {% block extra_css %}{% endblock %}
 </head>
+
 <body>
-<div class="admin-shell">
 
-    <!-- ================================================================
-         SIDEBAR
-    ================================================================ -->
-    <aside class="admin-sidebar" id="adminSidebar">
+<!-- Mobile sidebar overlay -->
+<div class="admin-sidebar-overlay" id="sidebarOverlay"></div>
 
-        <div class="sidebar-brand">
-            <div class="sidebar-brand-logo">V&M <span>PROJECTS</span></div>
-            <div class="sidebar-brand-sub">Admin Console</div>
-        </div>
+<!-- ═══════════════════════════════════════════════
+     ADMIN WRAPPER
+═══════════════════════════════════════════════ -->
+<div class="admin-wrapper">
 
-        <nav class="sidebar-nav">
+  <!-- ── SIDEBAR ─────────────────────────────────── -->
+  <aside class="admin-sidebar" id="adminSidebar" aria-label="Admin navigation">
 
-            <!-- MAIN -->
-            <span class="sidebar-group-label">Main</span>
-
-            <a href="{{ url_for('admin.dashboard') }}"
-               class="sidebar-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
-                <i class="bi bi-speedometer2"></i>
-                Dashboard
-            </a>
-
-            <a href="{{ url_for('admin.services') }}"
-               class="sidebar-link {% if request.endpoint == 'admin.services' %}active{% endif %}">
-                <i class="bi bi-tools"></i>
-                Services
-            </a>
-
-            <a href="{{ url_for('admin.projects') }}"
-               class="sidebar-link {% if request.endpoint == 'admin.projects' %}active{% endif %}">
-                <i class="bi bi-building"></i>
-                Projects
-            </a>
-
-            <a href="{{ url_for('admin.inquiries') }}"
-               class="sidebar-link {% if request.endpoint == 'admin.inquiries' %}active{% endif %}">
-                <i class="bi bi-envelope-paper"></i>
-                Inquiries
-                {% if new_inquiries %}
-                <span class="sidebar-badge">{{ new_inquiries }}</span>
-                {% endif %}
-            </a>
-
-            <!-- SYSTEM -->
-            <span class="sidebar-group-label">System</span>
-
-            <a href="{{ url_for('home') }}" target="_blank" class="sidebar-link">
-                <i class="bi bi-arrow-up-right-square"></i>
-                View Storefront
-            </a>
-
-            <a href="{{ url_for('admin.settings') }}"
-               class="sidebar-link {% if request.endpoint in ['admin.settings','admin.upload_image','admin.delete_image','admin.change_password'] %}active{% endif %}">
-                <i class="bi bi-gear"></i>
-                Settings
-            </a>
-
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="sidebar-user">
-                <div class="sidebar-avatar" style="background: var(--primary);">
-                    <i class="bi bi-person-fill" style="color: #000;"></i>
-                </div>
-                <div>
-                    <div class="sidebar-user-name">{{ admin_username }}</div>
-                    <div class="sidebar-user-role">Administrator</div>
-                </div>
-                <a href="{{ url_for('admin.logout') }}" class="sidebar-logout" title="Sign out">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-    </aside>
-
-    <!-- ================================================================
-         MAIN AREA
-    ================================================================ -->
-    <div class="admin-main">
-
-        <!-- Top Bar -->
-        <div class="admin-topbar">
-            <div class="d-flex align-items-center gap-2">
-                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-                    <i class="bi bi-list"></i>
-                </button>
-                <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
-                <span class="topbar-crumb">{% block page_crumb %}{% endblock %}</span>
-            </div>
-            <div class="topbar-actions">
-                <div class="topbar-search-wrap d-none d-md-block">
-                    <i class="bi bi-search"></i>
-                    <input type="text" class="topbar-search" placeholder="Search…" id="topbarSearch">
-                </div>
-                <div class="topbar-icon-btn" title="Alerts">
-                    <i class="bi bi-bell"></i>
-                    {% if new_inquiries %}<span class="topbar-notif-dot"></span>{% endif %}
-                </div>
-                <a href="{{ url_for('home') }}" target="_blank"
-                   class="topbar-icon-btn" title="Open storefront">
-                    <i class="bi bi-box-arrow-up-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- Page Content -->
-        <div class="admin-content">
-
-            <!-- Flash messages -->
-            {% with messages = get_flashed_messages(with_categories=True) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                    <div class="admin-flash admin-flash--{{ category }}" role="alert">
-                        <i class="bi {% if category == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-circle-fill{% endif %}"></i>
-                        {{ message }}
-                        <button class="flash-dismiss" type="button" onclick="this.parentElement.remove()">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            {% block content %}{% endblock %}
-
-        </div>
+    <div class="admin-sidebar-brand">
+      <span class="dc-wordmark">DEL<span>CON</span></span>
+      <div class="dc-admin-label">Admin Portal</div>
     </div>
 
-</div><!-- /.admin-shell -->
+    <nav class="admin-nav">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
-{% block extra_scripts %}{% endblock %}
+      <div class="admin-nav-section">Main</div>
+
+      <a class="admin-nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
+         href="{{ url_for('admin.dashboard') }}">
+        <i class="bi bi-speedometer2"></i>Dashboard
+      </a>
+
+      <a class="admin-nav-link {% if request.endpoint == 'admin.inquiries' %}active{% endif %}"
+         href="{{ url_for('admin.inquiries') }}">
+        <i class="bi bi-inbox-fill"></i>Inquiries
+        {% if new_inquiries is defined and new_inquiries > 0 %}
+          <span class="badge badge-new ms-auto">{{ new_inquiries }}</span>
+        {% endif %}
+      </a>
+
+      <hr class="admin-nav-divider">
+      <div class="admin-nav-section">Content</div>
+
+      <a class="admin-nav-link {% if request.endpoint == 'admin.projects' %}active{% endif %}"
+         href="{{ url_for('admin.projects') }}">
+        <i class="bi bi-building-check"></i>Projects
+      </a>
+
+      <a class="admin-nav-link {% if request.endpoint in ['admin.services','admin.service_form'] %}active{% endif %}"
+         href="{{ url_for('admin.services') }}">
+        <i class="bi bi-tools"></i>Services
+      </a>
+
+      <a class="admin-nav-link {% if request.endpoint == 'admin.products' %}active{% endif %}"
+         href="{{ url_for('admin.products') }}">
+        <i class="bi bi-box-seam"></i>Products
+      </a>
+
+      <hr class="admin-nav-divider">
+      <div class="admin-nav-section">System</div>
+
+      <a class="admin-nav-link" href="{{ url_for('main.index') }}" target="_blank" rel="noopener">
+        <i class="bi bi-arrow-up-right-square"></i>View Site
+      </a>
+
+      <a class="admin-nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}"
+         href="{{ url_for('admin.settings') }}">
+        <i class="bi bi-gear-fill"></i>Settings
+      </a>
+
+    </nav>
+
+    <div class="admin-nav-logout">
+      <a class="admin-nav-link"
+         href="{{ url_for('admin.logout') }}"
+         style="color: var(--dc-danger);"
+         onclick="return confirm('Sign out of the admin portal?')">
+        <i class="bi bi-box-arrow-left"></i>Sign Out
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN CONTENT ───────────────────────────── -->
+  <div class="admin-main">
+
+    <!-- Top bar -->
+    <header class="admin-topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="admin-sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <h1 class="admin-topbar-title">{% block page_title %}Dashboard{% endblock %}</h1>
+      </div>
+
+      <div class="admin-topbar-meta">
+        <span class="admin-user d-none d-md-block">
+          Signed in as <strong>{{ admin_username if admin_username is defined else 'Admin' }}</strong>
+        </span>
+        <a href="{{ url_for('admin.logout') }}"
+           class="btn btn-secondary btn-sm"
+           style="font-size:0.75rem; padding:0.3rem 0.75rem; border-radius:3px;"
+           onclick="return confirm('Sign out?')">
+          <i class="bi bi-box-arrow-left me-1"></i>Logout
+        </a>
+      </div>
+    </header>
+
+    <!-- Flash messages -->
+    <div class="px-4 pt-3">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show mb-2" role="alert">
+              <i class="bi {% if category == 'success' %}bi-check-circle-fill{% elif category == 'danger' %}bi-exclamation-circle-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Page content -->
+    <main class="admin-content">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div><!-- /admin-main -->
+
+</div><!-- /admin-wrapper -->
+
+<!-- Bootstrap 5.3 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmidXmgI/BFbRqmXKQ6/0EqOblCQ"
+        crossorigin="anonymous"></script>
+
+<script>
+  (function () {
+    var toggle  = document.getElementById('sidebarToggle');
+    var sidebar = document.getElementById('adminSidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+
+    function open()  {
+      sidebar.classList.add('sidebar-open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      sidebar.classList.remove('sidebar-open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (toggle)  toggle.addEventListener('click', function () {
+      sidebar.classList.contains('sidebar-open') ? close() : open();
+    });
+    if (overlay) overlay.addEventListener('click', close);
+  })();
+</script>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>

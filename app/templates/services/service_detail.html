@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.name }} — Delcon Infrastructure Specialists{% endblock %}
+{% block meta_description %}{{ service.meta_description | default(service.short_description) }}{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERVICE HERO
+═══════════════════════════════════════════════════════════ -->
+<section class="service-hero" aria-label="{{ service.name }} overview">
+  <div class="container">
+    <div class="row align-items-center g-4">
+
+      <div class="col-lg-8">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb" style="background:none; padding:0; margin:0; font-size:0.8rem;">
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('main.index') }}" style="color:var(--dc-text-muted);">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{{ url_for('main.services') }}" style="color:var(--dc-text-muted);">Services</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page"
+                style="color:var(--dc-orange);">{{ service.name }}</li>
+          </ol>
+        </nav>
+
+        <span class="dc-section-label">{{ service.category | default('Trenchless Technology') }}</span>
+
+        <h1 class="mt-1 mb-3">{{ service.name }}</h1>
+
+        {% if service.spec_range %}
+          <div class="dc-hero-eyebrow d-inline-flex mb-3">
+            <i class="bi bi-rulers me-2"></i> {{ service.spec_range }}
+          </div>
+        {% endif %}
+
+        <p class="lead" style="max-width:620px;">
+          {{ service.short_description | default('Delcon delivers specialist trenchless and civil infrastructure services across South Africa.') }}
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="#quote-form" class="btn btn-dc-primary btn-cta">
+            <i class="bi bi-send-fill me-2"></i>Request a Quote
+          </a>
+          <a href="{{ url_for('main.services') }}" class="btn btn-dc-outline btn-cta">
+            <i class="bi bi-arrow-left me-2"></i>All Services
+          </a>
+        </div>
+      </div>
+
+      <!-- Key specs panel -->
+      {% if service.specs %}
+        <div class="col-lg-4">
+          <div class="card p-4"
+               style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange);
+                      background:var(--dc-surface-2);">
+            <h3 class="h6 mb-3" style="text-transform:uppercase; letter-spacing:0.08em;
+                                        color:var(--dc-orange); font-size:0.75rem;">
+              Technical Specs
+            </h3>
+            <ul class="dc-scope-list">
+              {% for spec in service.specs %}
+                <li>{{ spec }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT + STICKY SIDEBAR
+═══════════════════════════════════════════════════════════ -->
+<section class="section-surface" aria-label="{{ service.name }} details">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- ── Main content col ───────────────────── -->
+      <div class="col-lg-8">
+
+        <!-- Full description -->
+        {% if service.full_description %}
+          <div class="mb-5">
+            <span class="dc-section-label">About This Service</span>
+            <h2 class="dc-section-title mt-1 h3">What We Deliver</h2>
+            <div class="mt-4" style="color:var(--dc-text); line-height:1.85; font-size:1rem;">
+              {{ service.full_description | safe }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Scope of work -->
+        {% if service.scope_items %}
+          <div class="mb-5">
+            <span class="dc-section-label">Scope of Work</span>
+            <h2 class="dc-section-title mt-1 h3">What's Included</h2>
+            <ul class="dc-scope-list mt-4">
+              {% for item in service.scope_items %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Methodology -->
+        {% if service.methodology %}
+          <div class="mb-5">
+            <span class="dc-section-label">Our Approach</span>
+            <h2 class="dc-section-title mt-1 h3">Methodology</h2>
+            <div class="mt-4" style="color:var(--dc-text-muted); line-height:1.85;">
+              {{ service.methodology | safe }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Applications -->
+        {% if service.applications %}
+          <div class="mb-5">
+            <span class="dc-section-label">Typical Applications</span>
+            <h2 class="dc-section-title mt-1 h3">Where It's Used</h2>
+            <div class="row g-3 mt-3">
+              {% for app in service.applications %}
+                <div class="col-md-6">
+                  <div class="dc-credential-card">
+                    <div class="dc-cred-value" style="font-size:0.9375rem;">
+                      <i class="bi bi-check-circle-fill text-orange me-2"></i>{{ app }}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Related services -->
+        <div>
+          <span class="dc-section-label">Also See</span>
+          <h2 class="dc-section-title mt-1 h3">Related Services</h2>
+          <div class="row g-3 mt-3">
+
+            {% set related = [
+              {'name': 'Pipe Jacking', 'anchor': 'pipe-jacking', 'icon': 'bi-arrow-bar-right', 'spec': '900mm – 2800mm'},
+              {'name': 'HDD Drilling', 'anchor': 'hdd', 'icon': 'bi-activity', 'spec': '100mm – 900mm'},
+              {'name': 'HDPE Welding', 'anchor': 'hdpe', 'icon': 'bi-fire', 'spec': '90mm – 355mm'}
+            ] %}
+
+            {% for rel in related %}
+              {% if rel.name != service.name %}
+                <div class="col-md-4">
+                  <a href="{{ url_for('main.services') }}#{{ rel.anchor }}"
+                     class="card p-3 text-decoration-none"
+                     style="border:1px solid var(--dc-steel); background:var(--dc-surface-2);
+                            transition:border-color 0.18s, box-shadow 0.18s;">
+                    <i class="bi {{ rel.icon }} text-orange mb-2" style="font-size:1.3rem;"></i>
+                    <div style="font-weight:700; font-size:0.875rem; color:var(--dc-white);">{{ rel.name }}</div>
+                    <div style="font-size:0.75rem; color:var(--dc-orange); font-weight:600; letter-spacing:0.05em;">
+                      {{ rel.spec }}
+                    </div>
+                  </a>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+
+      </div><!-- /col-lg-8 -->
+
+      <!-- ── Sticky sidebar col ─────────────────── -->
+      <div class="col-lg-4">
+        <div class="service-sticky-sidebar" id="quote-form">
+
+          <!-- Quote form card -->
+          <div class="card p-4 mb-4"
+               style="border:1px solid var(--dc-steel); border-top:3px solid var(--dc-orange);
+                      background:var(--dc-surface-2);">
+
+            <h3 class="h5 mb-1">Request a Quote</h3>
+            <p style="font-size:0.85rem; color:var(--dc-text-muted); margin-bottom:1.25rem;">
+              Tell us about your project — we'll respond within 48 hours.
+            </p>
+
+            <form action="{{ url_for('main.contact') }}" method="POST" novalidate>
+              {# Add {{ csrf_token() }} once Flask-WTF is configured #}
+              <input type="hidden" name="service_type"
+                     value="{{ service.slug | default('general') }}">
+
+              <div class="mb-3">
+                <label for="sb_name" class="form-label">Full Name *</label>
+                <input type="text" class="form-control" id="sb_name" name="full_name"
+                       placeholder="Your name" required autocomplete="name">
+              </div>
+
+              <div class="mb-3">
+                <label for="sb_company" class="form-label">Company</label>
+                <input type="text" class="form-control" id="sb_company" name="company"
+                       placeholder="Organisation" autocomplete="organization">
+              </div>
+
+              <div class="mb-3">
+                <label for="sb_phone" class="form-label">Phone *</label>
+                <input type="tel" class="form-control" id="sb_phone" name="phone"
+                       placeholder="076 000 0000" required autocomplete="tel">
+              </div>
+
+              <div class="mb-3">
+                <label for="sb_email" class="form-label">Email *</label>
+                <input type="email" class="form-control" id="sb_email" name="email"
+                       placeholder="you@company.co.za" required autocomplete="email">
+              </div>
+
+              <div class="mb-3">
+                <label for="sb_message" class="form-label">Project Details *</label>
+                <textarea class="form-control" id="sb_message" name="message" rows="4"
+                          placeholder="Location, scope, pipe sizes, timeline…"
+                          required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-dc-primary w-100 btn-cta">
+                <i class="bi bi-send-fill me-2"></i>Send Enquiry
+              </button>
+            </form>
+          </div><!-- /quote card -->
+
+          <!-- Direct contact -->
+          <div class="card p-4"
+               style="border:1px solid var(--dc-steel); background:var(--dc-surface-2);">
+            <h3 class="h6 mb-3" style="text-transform:uppercase; font-size:0.75rem;
+                                        letter-spacing:0.1em; color:var(--dc-orange);">
+              Direct Contact
+            </h3>
+            <div class="dc-footer-contact-row">
+              <i class="bi bi-telephone-fill dc-icon"></i>
+              <div>
+                <a href="tel:0769415725" class="d-block" style="color:var(--dc-text);">076 941 5725</a>
+                <a href="tel:0865826796" class="d-block" style="color:var(--dc-text-muted);">086 582 6796</a>
+              </div>
+            </div>
+            <div class="dc-footer-contact-row">
+              <i class="bi bi-envelope-fill dc-icon"></i>
+              <a href="mailto:INFO@VANDMPROJECTS.CO.ZA"
+                 style="color:var(--dc-text-muted); font-size:0.85rem; word-break:break-all;">
+                INFO@VANDMPROJECTS.CO.ZA
+              </a>
+            </div>
+          </div>
+
+        </div><!-- /sticky sidebar -->
+      </div><!-- /col-lg-4 -->
+
+    </div><!-- /row -->
+  </div>
+</section>
+
+{% endblock %}

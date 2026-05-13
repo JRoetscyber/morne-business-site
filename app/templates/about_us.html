@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}About Delcon — Trenchless Infrastructure Specialists{% endblock %}
+{% block meta_description %}Learn about Delcon — a Level-2 BBBEE multi-disciplinary contractor built on the principle of People First. Our story, vision, mission, and core values.{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════
+     PAGE HERO
+═══════════════════════════════════════════════ -->
+<section style="background:var(--dc-black); border-bottom:1px solid var(--dc-steel);
+                padding:4rem 0 3.5rem;">
+  <div class="container">
+    <div style="max-width:680px;">
+      <div style="display:inline-flex; align-items:center; gap:0.5rem;
+                  font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+                  text-transform:uppercase; color:var(--dc-orange); margin-bottom:1rem;">
+        <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+        Our Company
+      </div>
+      <h1 style="font-size:clamp(2rem, 5vw, 3rem); font-weight:800; color:var(--dc-white);
+                 line-height:1.15; margin:0 0 1rem;">
+        About <span style="color:var(--dc-orange);">Delcon</span>
+      </h1>
+      <p style="font-size:1.05rem; color:var(--dc-text-muted); line-height:1.7; margin:0;">
+        A Level-2 BBBEE multi-disciplinary contractor built on the principle of
+        <em style="color:var(--dc-text);">"Batho Pele"</em> — People First.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     OUR STORY
+═══════════════════════════════════════════════ -->
+<section class="section-surface" style="padding:5rem 0;">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+
+      <div class="col-lg-6">
+        <div style="display:inline-flex; align-items:center; gap:0.5rem;
+                    font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+                    text-transform:uppercase; color:var(--dc-orange); margin-bottom:1rem;">
+          <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+          Our Story
+        </div>
+        <h2 class="dc-section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.2rem); margin-bottom:1.5rem;">
+          Built on Purpose, Grown Through People
+        </h2>
+        <p style="color:var(--dc-text-muted); line-height:1.8; margin-bottom:1.25rem;">
+          Delcon is a multi-disciplinary contracting service active in both the public and private
+          sectors throughout Southern Africa. Our company was born from a need to address a lack of
+          economic development, high unemployment, and a shortage of skills in rural areas.
+        </p>
+        <p style="color:var(--dc-text-muted); line-height:1.8; margin-bottom:1.5rem;">
+          Starting from humble beginnings, we have grown into an innovative Black Economic
+          Empowerment (BEE) company built on the principles of
+          <strong style="color:var(--dc-white);">"Batho Pele"</strong> — People First. We are a
+          Level-2 BBBEE compliant firm that prides itself on job creation and the advancement
+          of South Africa.
+        </p>
+        <span class="badge"
+              style="background:var(--dc-orange-subtle); border:1px solid var(--dc-orange);
+                     color:var(--dc-orange); font-size:0.75rem; padding:0.5rem 1rem;
+                     letter-spacing:0.06em;">
+          Level {{ site_settings.get('bbbee_level', '2') }} BBBEE Contributor
+        </span>
+      </div>
+
+      <div class="col-lg-6">
+        {% set about_img = site_settings.get('about_image_path') %}
+        {% if about_img %}
+          <div style="border-radius:var(--dc-radius-lg); overflow:hidden;
+                      border:1px solid var(--dc-steel); aspect-ratio:4/3;">
+            <img src="{{ url_for('static', filename=about_img) }}"
+                 alt="Delcon team at work"
+                 style="width:100%; height:100%; object-fit:cover;">
+          </div>
+        {% else %}
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="dc-credential-card">
+                <div style="font-size:2rem; font-weight:800; color:var(--dc-orange); line-height:1;">2</div>
+                <div style="font-size:0.78rem; color:var(--dc-text-muted); margin-top:0.25rem;">BBBEE Level</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="dc-credential-card">
+                <i class="bi bi-globe2" style="font-size:2rem; color:var(--dc-orange);"></i>
+                <div style="font-size:0.78rem; color:var(--dc-text-muted); margin-top:0.25rem;">National Coverage</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="dc-credential-card">
+                <i class="bi bi-people-fill" style="font-size:2rem; color:var(--dc-orange);"></i>
+                <div style="font-size:0.78rem; color:var(--dc-text-muted); margin-top:0.25rem;">Job Creation Focus</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="dc-credential-card">
+                <i class="bi bi-award-fill" style="font-size:2rem; color:var(--dc-orange);"></i>
+                <div style="font-size:0.78rem; color:var(--dc-text-muted); margin-top:0.25rem;">BEE Compliant</div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     VISION & MISSION
+═══════════════════════════════════════════════ -->
+<section style="background:var(--dc-black); padding:5rem 0;
+                border-top:1px solid var(--dc-steel); border-bottom:1px solid var(--dc-steel);">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <div style="display:inline-flex; align-items:center; gap:0.5rem;
+                  font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+                  text-transform:uppercase; color:var(--dc-orange); margin-bottom:0.75rem;">
+        <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+        Purpose &amp; Direction
+        <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+      </div>
+      <h2 class="dc-section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.2rem);">
+        Vision &amp; Mission
+      </h2>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-lg-6">
+        <div style="background:var(--dc-surface-2); border:1px solid var(--dc-steel);
+                    border-top:3px solid var(--dc-orange); border-radius:var(--dc-radius-lg);
+                    padding:2.25rem; height:100%;">
+          <div style="display:flex; align-items:center; gap:0.85rem; margin-bottom:1.25rem;">
+            <div style="width:44px; height:44px; border-radius:var(--dc-radius);
+                        background:var(--dc-orange-subtle); border:1px solid var(--dc-orange);
+                        display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <i class="bi bi-eye-fill" style="color:var(--dc-orange); font-size:1.1rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--dc-white); margin:0;">
+              Our Vision
+            </h3>
+          </div>
+          <p style="color:var(--dc-text-muted); line-height:1.8; margin:0;">
+            To be a proud contributor to the development of Southern Africa by laying solid foundations
+            for infrastructure and construction projects — including residential, community, and
+            trenchless technology implementation.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div style="background:var(--dc-surface-2); border:1px solid var(--dc-steel);
+                    border-top:3px solid var(--dc-orange); border-radius:var(--dc-radius-lg);
+                    padding:2.25rem; height:100%;">
+          <div style="display:flex; align-items:center; gap:0.85rem; margin-bottom:1.25rem;">
+            <div style="width:44px; height:44px; border-radius:var(--dc-radius);
+                        background:var(--dc-orange-subtle); border:1px solid var(--dc-orange);
+                        display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <i class="bi bi-bullseye" style="color:var(--dc-orange); font-size:1.1rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem; font-weight:700; color:var(--dc-white); margin:0;">
+              Our Mission
+            </h3>
+          </div>
+          <p style="color:var(--dc-text-muted); line-height:1.8; margin:0;">
+            To be the preeminent provider of superior construction services by consistently improving
+            our quality. We aim to add value for clients through innovation and thorough performance,
+            serving with character to bring honour to God.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CORE VALUES
+═══════════════════════════════════════════════ -->
+<section class="section-surface-2" style="padding:5rem 0;">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <div style="display:inline-flex; align-items:center; gap:0.5rem;
+                  font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+                  text-transform:uppercase; color:var(--dc-orange); margin-bottom:0.75rem;">
+        <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+        What Drives Us
+        <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+      </div>
+      <h2 class="dc-section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.2rem);">
+        Core Values
+      </h2>
+      <p style="color:var(--dc-text-muted); max-width:520px; margin:1rem auto 0; line-height:1.7;">
+        Our operations are guided by a commitment to excellence and professional integrity.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+      {% set values = [
+        ('bi bi-shield-fill-check', 'Honesty & Integrity',
+         'Maintaining openness and transparency in all we do.'),
+        ('bi-briefcase-fill', 'Professionalism',
+         'Delivering service standards that are both innovative and creative.'),
+        ('bi-person-check-fill', 'Accountability',
+         'Remaining responsible, decisive, and disciplined in every project.'),
+        ('bi-gem', 'Quality',
+         'Focusing on efficiency and attention to detail to ensure value for money.'),
+        ('bi-heart-fill', 'Client Satisfaction',
+         'Providing client-centered services that consistently exceed expectations.'),
+      ] %}
+
+      {% for icon, name, desc in values %}
+        <div class="col-md-6 col-lg-4">
+          <div style="background:var(--dc-surface); border:1px solid var(--dc-steel);
+                      border-radius:var(--dc-radius-lg); padding:1.75rem; height:100%;
+                      transition:border-color var(--dc-ease), box-shadow var(--dc-ease);"
+               onmouseover="this.style.borderColor='var(--dc-orange)'; this.style.boxShadow='var(--dc-shadow-orange)'"
+               onmouseout="this.style.borderColor='var(--dc-steel)'; this.style.boxShadow='none'">
+            <div style="width:48px; height:48px; border-radius:var(--dc-radius);
+                        background:var(--dc-orange-subtle); border:1px solid var(--dc-orange);
+                        display:flex; align-items:center; justify-content:center; margin-bottom:1.1rem;">
+              <i class="bi {{ icon }}" style="color:var(--dc-orange); font-size:1.2rem;"></i>
+            </div>
+            <h3 style="font-size:0.95rem; font-weight:700; color:var(--dc-white); margin-bottom:0.5rem;">
+              {{ name }}
+            </h3>
+            <p style="color:var(--dc-text-muted); font-size:0.875rem; line-height:1.7; margin:0;">
+              {{ desc }}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     OBJECTIVES
+═══════════════════════════════════════════════ -->
+<section style="background:var(--dc-black); padding:5rem 0; border-top:1px solid var(--dc-steel);">
+  <div class="container">
+
+    <div class="row g-5 align-items-start">
+
+      <div class="col-lg-4">
+        <div style="display:inline-flex; align-items:center; gap:0.5rem;
+                    font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+                    text-transform:uppercase; color:var(--dc-orange); margin-bottom:1rem;">
+          <span style="display:inline-block; width:24px; height:2px; background:var(--dc-orange);"></span>
+          Our Commitment
+        </div>
+        <h2 class="dc-section-title" style="font-size:clamp(1.6rem, 3.5vw, 2.2rem); margin-bottom:1rem;">
+          Our Objectives
+        </h2>
+        <p style="color:var(--dc-text-muted); line-height:1.8;">
+          Delcon is dedicated to the betterment of the communities we serve. Every project we
+          undertake is measured against these four commitments.
+        </p>
+        {% set about_img2 = site_settings.get('about_image_2_path') %}
+        {% if about_img2 %}
+          <div style="border-radius:var(--dc-radius-lg); overflow:hidden;
+                      border:1px solid var(--dc-steel); margin-bottom:1.25rem; aspect-ratio:4/3;">
+            <img src="{{ url_for('static', filename=about_img2) }}"
+                 alt="Delcon operations"
+                 style="width:100%; height:100%; object-fit:cover;">
+          </div>
+        {% endif %}
+        <a href="{{ url_for('main.contact') }}" class="btn btn-dc-primary mt-2">
+          <i class="bi bi-send-fill me-2"></i>Work With Us
+        </a>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="row g-3">
+
+          {% set objectives = [
+            ('bi-people-fill', 'Job Creation',
+             'Creating sustainable jobs for unemployed communities and alleviating poverty across Southern Africa.'),
+            ('bi-mortarboard-fill', 'Skills Transfer',
+             'Capacitating employees with business skills and technical expertise for long-term self-sufficiency.'),
+            ('bi-building-fill', 'Developmental Focus',
+             'Dedicating time and detail to rural development and ongoing infrastructure maintenance.'),
+            ('bi-graph-up-arrow', 'Operational Excellence',
+             'Ensuring high-quality project delivery that is both on time and within budget — every time.'),
+          ] %}
+
+          {% for icon, title, desc in objectives %}
+            <div class="col-sm-6">
+              <div style="background:var(--dc-surface-2); border:1px solid var(--dc-steel);
+                          border-left:3px solid var(--dc-orange); border-radius:var(--dc-radius-lg);
+                          padding:1.5rem; height:100%;">
+                <div style="display:flex; align-items:flex-start; gap:0.9rem;">
+                  <div style="width:40px; height:40px; border-radius:var(--dc-radius);
+                              background:var(--dc-orange-subtle); border:1px solid var(--dc-orange);
+                              display:flex; align-items:center; justify-content:center; flex-shrink:0;
+                              margin-top:0.1rem;">
+                    <i class="bi {{ icon }}" style="color:var(--dc-orange); font-size:1rem;"></i>
+                  </div>
+                  <div>
+                    <h3 style="font-size:0.9rem; font-weight:700; color:var(--dc-white); margin-bottom:0.35rem;">
+                      {{ title }}
+                    </h3>
+                    <p style="color:var(--dc-text-muted); font-size:0.85rem; line-height:1.7; margin:0;">
+                      {{ desc }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CONTACT STRIP
+═══════════════════════════════════════════════ -->
+<section style="background:var(--dc-surface-2); border-top:1px solid var(--dc-steel); padding:3.5rem 0;">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+
+      <div class="col-lg-5">
+        <h2 style="font-size:1.4rem; font-weight:700; color:var(--dc-white); margin:0 0 0.3rem;">
+          Ready to work with us?
+        </h2>
+        <p style="color:var(--dc-text-muted); margin:0; font-size:0.9rem;">
+          Get in touch — we respond within 48 business hours.
+        </p>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-lg-end">
+
+          <a href="tel:{{ site_settings.get('phone_primary', '0769415725') | replace(' ', '') }}"
+             style="display:inline-flex; align-items:center; gap:0.6rem;
+                    padding:0.65rem 1.25rem; border:1px solid var(--dc-steel);
+                    border-radius:var(--dc-radius-sm); color:var(--dc-text); text-decoration:none;
+                    font-size:0.875rem; font-weight:600; background:var(--dc-surface);
+                    transition:border-color var(--dc-ease), color var(--dc-ease);"
+             onmouseover="this.style.borderColor='var(--dc-orange)'; this.style.color='var(--dc-orange)'"
+             onmouseout="this.style.borderColor='var(--dc-steel)'; this.style.color='var(--dc-text)'">
+            <i class="bi bi-telephone-fill text-orange"></i>
+            {{ site_settings.get('phone_primary', '076 941 5725') }}
+          </a>
+
+          <a href="mailto:{{ site_settings.get('email_contact', 'INFO@VANDMPROJECTS.CO.ZA') }}"
+             style="display:inline-flex; align-items:center; gap:0.6rem;
+                    padding:0.65rem 1.25rem; border:1px solid var(--dc-steel);
+                    border-radius:var(--dc-radius-sm); color:var(--dc-text); text-decoration:none;
+                    font-size:0.875rem; font-weight:600; background:var(--dc-surface);
+                    transition:border-color var(--dc-ease), color var(--dc-ease);"
+             onmouseover="this.style.borderColor='var(--dc-orange)'; this.style.color='var(--dc-orange)'"
+             onmouseout="this.style.borderColor='var(--dc-steel)'; this.style.color='var(--dc-text)'">
+            <i class="bi bi-envelope-fill text-orange"></i>
+            {{ site_settings.get('email_contact', 'INFO@VANDMPROJECTS.CO.ZA') }}
+          </a>
+
+          <a href="{{ url_for('main.contact') }}" class="btn btn-dc-primary">
+            <i class="bi bi-send-fill me-2"></i>Send an Enquiry
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
