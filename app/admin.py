@@ -9,6 +9,7 @@ import os
 import uuid
 import functools
 from datetime import datetime
+from sqlalchemy import func
 
 from flask import (
     Blueprint, render_template, request,
@@ -18,7 +19,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
-from app import db
+from app import db, invalidate_cp_cache
 from app.models import AdminUser, Lead, Project, Service, SiteSetting
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -30,20 +31,30 @@ IMAGE_SLOTS = [
     {
         'key':     'hero_image_path',
         'display': 'Homepage — Hero Background',
+        'type':    'image',
         'desc':    'Full-width banner behind the homepage hero text. '
                    'Recommended: 1920 × 1080px, JPG/WebP.',
+    },
+    {
+        'key':     'hero_video_path',
+        'display': 'Homepage — Hero Video',
+        'type':    'video',
+        'desc':    'Optional video to play in the background. '
+                   'Recommended: optimized .mp4 or .webm, max 5-10MB.',
     },
 
     # ── About Us ────────────────────────────────────────────
     {
         'key':     'about_image_path',
         'display': 'About Us — Primary Photo',
+        'type':    'image',
         'desc':    'Main photo in the Our Story section (right column). '
                    'Recommended: 900 × 600px.',
     },
     {
         'key':     'about_image_2_path',
         'display': 'About Us — Secondary Photo',
+        'type':    'image',
         'desc':    'Second photo shown in the Objectives section. '
                    'Recommended: 900 × 600px.',
     },
@@ -52,24 +63,28 @@ IMAGE_SLOTS = [
     {
         'key':     'service_img_pipe_jacking',
         'display': 'Services — Pipe Jacking Photo',
+        'type':    'image',
         'desc':    'Photo in the Pipe Jacking section sidebar. '
                    'Recommended: 800 × 600px.',
     },
     {
         'key':     'service_img_hdd',
         'display': 'Services — HDD Photo',
+        'type':    'image',
         'desc':    'Photo in the Horizontal Directional Drilling section sidebar. '
                    'Recommended: 800 × 600px.',
     },
     {
         'key':     'service_img_hdpe',
         'display': 'Services — HDPE Welding Photo',
+        'type':    'image',
         'desc':    'Photo in the HDPE Butt-Welding section sidebar. '
                    'Recommended: 800 × 600px.',
     },
     {
         'key':     'service_img_infrastructure',
         'display': 'Services — Infrastructure Photo',
+        'type':    'image',
         'desc':    'Photo in the General Infrastructure section sidebar. '
                    'Recommended: 800 × 600px.',
     },
@@ -184,15 +199,18 @@ def inquiries():
     if status_filter in Lead.VALID_STATUSES:
         query = query.filter_by(status=status_filter)
 
+    # One GROUP BY query replaces five separate COUNT(*) round-trips
+    rows   = db.session.query(Lead.status, func.count(Lead.id)).group_by(Lead.status).all()
+    totals = {status: count for status, count in rows}
     ctx.update({
         'inquiries':     query.order_by(Lead.created_at.desc()).all(),
         'status_filter': status_filter,
         'status_counts': {
-            'all':     Lead.query.count(),
-            'new':     Lead.query.filter_by(status='new').count(),
-            'open':    Lead.query.filter_by(status='open').count(),
-            'replied': Lead.query.filter_by(status='replied').count(),
-            'closed':  Lead.query.filter_by(status='closed').count(),
+            'all':     sum(totals.values()),
+            'new':     totals.get('new', 0),
+            'open':    totals.get('open', 0),
+            'replied': totals.get('replied', 0),
+            'closed':  totals.get('closed', 0),
         },
     })
     return render_template('admin/inquiries_manage.html', **ctx)
@@ -354,6 +372,7 @@ def service_form(id=None):
             db.session.add(service)
 
         db.session.commit()
+        invalidate_cp_cache()
         flash(f'Service "{service.name}" saved.', 'success')
         return redirect(url_for('admin.services'))
 
@@ -371,6 +390,7 @@ def delete_service(id):
     service = Service.query.get_or_404(id)
     db.session.delete(service)
     db.session.commit()
+    invalidate_cp_cache()
     flash(f'Service "{service.name}" deleted.', 'success')
     return redirect(url_for('admin.services'))
 
@@ -421,6 +441,7 @@ def save_settings():
             db.session.add(SiteSetting(key=key, value=value))
 
     db.session.commit()
+    invalidate_cp_cache()
     flash('Site settings saved.', 'success')
     return redirect(url_for('admin.settings'))
 
@@ -439,7 +460,7 @@ def upload_image():
         return redirect(url_for('admin.settings'))
 
     if not _allowed_file(file.filename):
-        flash('File type not allowed. Use PNG, JPG, or WebP.', 'danger')
+        flash('File type not allowed. Use PNG, JPG, WebP, MP4, or WebM.', 'danger')
         return redirect(url_for('admin.settings'))
 
     # Build a collision-safe filename: <slot_key>_<8-char uuid>.<ext>

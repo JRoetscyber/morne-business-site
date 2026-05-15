@@ -3,10 +3,12 @@ Public-facing routes for the Delcon site.
 Blueprint: main
 """
 import json
+import threading
 from flask import (
     Blueprint, render_template, request,
-    redirect, url_for, flash, abort,
+    redirect, url_for, flash, abort, current_app,
 )
+from flask_mailman import EmailMessage
 from app import db
 from app.models import Lead, Service, Project
 
@@ -66,6 +68,48 @@ def _save_lead(data, ip_address):
     return lead
 
 
+def _send_lead_notification(data):
+    """Sends an email notification to the client about the new lead."""
+    recipient = current_app.config.get('CONTACT_EMAIL')
+    if not recipient:
+        return
+
+    subject = f"New Website Enquiry: {data['full_name']}"
+    
+    body = f"""
+    You have received a new enquiry from the website:
+
+    Name: {data['full_name']}
+    Company: {data['company'] or 'N/A'}
+    Email: {data['email']}
+    Phone: {data['phone']}
+    Service: {data['service_type']}
+
+    Message:
+    {data['message']}
+
+    ---
+    This is an automated notification from your website.
+    """
+
+    msg = EmailMessage(
+        subject=subject,
+        body=body,
+        to=[recipient]
+    )
+
+    # Send in a background thread so the HTTP response is not blocked by SMTP.
+    app = current_app._get_current_object()
+    def _send():
+        with app.app_context():
+            try:
+                msg.send()
+            except Exception as e:
+                app.logger.error(f"Failed to send lead notification: {e}")
+
+    threading.Thread(target=_send, daemon=True).start()
+
+
 # ── Public routes ──────────────────────────────────────────
 
 @main.route('/', methods=['GET', 'POST'])
@@ -79,6 +123,8 @@ def index():
             return redirect(url_for('main.index') + '#contact')
 
         _save_lead(data, request.remote_addr)
+        _send_lead_notification(data)
+        
         flash(
             'Thank you, {}! Your enquiry has been received. '
             'We will be in touch within 48 business hours.'.format(data['full_name']),
@@ -104,6 +150,8 @@ def contact():
             return redirect(url_for('main.services') + '#contact-cta')
 
         _save_lead(data, request.remote_addr)
+        _send_lead_notification(data)
+
         flash(
             'Thank you, {}! We will be in touch within 48 business hours.'.format(data['full_name']),
             'success',

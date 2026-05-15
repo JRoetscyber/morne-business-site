@@ -214,5 +214,12 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Project specific
+delcon_leads.db
+.claude/
+.env
+app/static/uploads/images/*
+!app/static/uploads/images/.gitkeep
+
 # Streamlit
 .streamlit/secrets.toml

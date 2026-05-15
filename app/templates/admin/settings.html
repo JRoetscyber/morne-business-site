@@ -114,10 +114,10 @@
 <div class="admin-table-wrap mb-4">
   <div class="admin-table-header">
     <h3 class="admin-table-title">
-      <i class="bi bi-images me-2 text-orange"></i>Image Manager
+      <i class="bi bi-images me-2 text-orange"></i>Media Manager
     </h3>
     <span style="font-size:0.72rem; color:var(--dc-text-muted);">
-      <i class="bi bi-info-circle me-1"></i>PNG · JPG · WebP · max 5 MB per file
+      <i class="bi bi-info-circle me-1"></i>PNG · JPG · WebP · MP4 · WebM · max 10 MB per file
     </span>
   </div>
 
@@ -135,22 +135,28 @@
             <div style="height:200px; background:var(--dc-surface-2); overflow:hidden;
                         position:relative;" id="preview-{{ slot.key }}">
               {% if current_path %}
-                <img src="{{ url_for('static', filename=current_path) }}"
-                     alt="{{ slot.display }}"
-                     style="width:100%; height:100%; object-fit:cover;">
+                {% if slot.type == 'video' %}
+                  <video src="{{ url_for('static', filename=current_path) }}"
+                         muted loop autoplay playsinline
+                         style="width:100%; height:100%; object-fit:cover;"></video>
+                {% else %}
+                  <img src="{{ url_for('static', filename=current_path) }}"
+                       alt="{{ slot.display }}"
+                       style="width:100%; height:100%; object-fit:cover;">
+                {% endif %}
                 <!-- Overlay label -->
                 <div style="position:absolute; bottom:0; left:0; right:0;
                             background:linear-gradient(transparent, rgba(0,0,0,0.7));
                             padding:0.75rem 0.85rem; font-size:0.72rem;
                             color:rgba(255,255,255,0.8);">
-                  <i class="bi bi-check-circle-fill text-orange me-1"></i>Image active on public site
+                  <i class="bi bi-check-circle-fill text-orange me-1"></i>Media active on public site
                 </div>
               {% else %}
                 <div style="width:100%; height:100%; display:flex; flex-direction:column;
                             align-items:center; justify-content:center; gap:0.5rem;
                             color:var(--dc-text-subtle);">
-                  <i class="bi bi-image" style="font-size:3rem; opacity:0.25;"></i>
-                  <span style="font-size:0.78rem;">No image uploaded</span>
+                  <i class="bi bi-{{ 'film' if slot.type == 'video' else 'image' }}" style="font-size:3rem; opacity:0.25;"></i>
+                  <span style="font-size:0.78rem;">No {{ slot.type }} uploaded</span>
                 </div>
               {% endif %}
             </div>
@@ -181,14 +187,15 @@
                        onmouseover="this.style.borderColor='var(--dc-orange)';this.style.color='var(--dc-orange)'"
                        onmouseout="this.style.borderColor='var(--dc-steel)';this.style.color='var(--dc-text-muted)'">
                   <i class="bi bi-upload"></i>
-                  {{ 'Replace Image' if current_path else 'Upload Image' }}
+                  {{ 'Replace ' ~ slot.type|capitalize if current_path else 'Upload ' ~ slot.type|capitalize }}
                   <input type="file"
                          name="image"
-                         accept=".png,.jpg,.jpeg,.webp,.gif"
+                         accept="{{ '.mp4,.webm' if slot.type == 'video' else '.png,.jpg,.jpeg,.webp,.gif' }}"
                          class="img-file-input"
                          data-preview="preview-{{ slot.key }}"
+                         data-type="{{ slot.type }}"
                          style="display:none;"
-                         onchange="previewImage(this); this.form.submit();">
+                         onchange="previewMedia(this); this.form.submit();">
                 </label>
               </form>
 
@@ -197,7 +204,7 @@
                 <form method="POST"
                       action="{{ url_for('admin.delete_image') }}"
                       style="margin-top:0.5rem;"
-                      onsubmit="return confirm('Remove this image from the public site?')">
+                      onsubmit="return confirm('Remove this {{ slot.type }} from the public site?')">
                   <input type="hidden" name="key" value="{{ slot.key }}">
                   <button type="submit"
                           style="display:flex; align-items:center; justify-content:center; gap:0.4rem;
@@ -207,7 +214,7 @@
                                  cursor:pointer; transition:background 0.18s;"
                           onmouseover="this.style.background='rgba(248,81,73,0.2)'"
                           onmouseout="this.style.background='var(--dc-danger-bg)'">
-                    <i class="bi bi-trash3"></i> Remove Image
+                    <i class="bi bi-trash3"></i> Remove {{ slot.type|capitalize }}
                   </button>
                 </form>
               {% endif %}
@@ -345,14 +352,21 @@
 
 {% block extra_js %}
 <script>
-  function previewImage(input) {
+  function previewMedia(input) {
     var previewEl = document.getElementById(input.dataset.preview);
+    var type = input.dataset.type || 'image';
     if (!previewEl || !input.files || !input.files[0]) return;
     var reader = new FileReader();
     reader.onload = function (e) {
-      previewEl.innerHTML =
-        '<img src="' + e.target.result + '" alt="Preview"' +
-        ' style="width:100%;height:100%;object-fit:cover;">';
+      if (type === 'video') {
+        previewEl.innerHTML =
+          '<video src="' + e.target.result + '"' +
+          ' style="width:100%;height:100%;object-fit:cover;" muted loop autoplay playsinline></video>';
+      } else {
+        previewEl.innerHTML =
+          '<img src="' + e.target.result + '" alt="Preview"' +
+          ' style="width:100%;height:100%;object-fit:cover;">';
+      }
     };
     reader.readAsDataURL(input.files[0]);
   }

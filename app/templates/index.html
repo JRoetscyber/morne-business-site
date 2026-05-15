@@ -7,16 +7,27 @@
 
 <!-- ═══════════════════════════════════════════════════════════
      HERO
-     Background image comes from admin Settings → Image Manager.
+     Background media comes from admin Settings → Media Manager.
      The CSS class dc-hero--image activates the overlay + bg-image
      rule in layout.css. Without an upload it renders the gradient pattern.
 ═══════════════════════════════════════════════════════════ -->
 {% set hero_img = site_settings.get('hero_image_path') %}
+{% set hero_vid = site_settings.get('hero_video_path') %}
+
 <section class="dc-hero{% if hero_img %} dc-hero--image{% endif %}"
          {% if hero_img %}
            style="--hero-img: url('{{ url_for('static', filename=hero_img) }}')"
          {% endif %}
          aria-label="Hero banner">
+
+  {% if hero_vid %}
+    <video class="dc-hero-video" autoplay muted loop playsinline
+           {% if hero_img %}poster="{{ url_for('static', filename=hero_img) }}"{% endif %}
+           preload="none"
+           data-src="{{ url_for('static', filename=hero_vid) }}">
+    </video>
+  {% endif %}
+
   <div class="container py-5">
     <div class="row">
       <div class="col-xl-7 col-lg-9">
@@ -420,4 +431,13 @@
   </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.addEventListener('load', function () {
+    var v = document.querySelector('.dc-hero-video[data-src]');
+    if (v) { v.src = v.dataset.src; v.load(); }
+  });
+</script>
 {% endblock %}

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: . # Assumes Dockerfile is in the current directory
+      dockerfile: Dockerfile
+    ports:
+      - "6030:6030" # Maps host port 6020 to container port 6020.
+    environment:
+      # Since this is a demo, we'll use the fallback for SECRET_KEY.
+      # For production, create a .env file with SECRET_KEY='your_strong_production_key'
+      - SECRET_KEY=${SECRET_KEY:-super_secret_key_rvltn_2026}
+      - FLASK_APP=run.py
+      - FLASK_CONFIG=production
+    volumes:
+      - ./delcon_leads.db:/app/delcon_leads.db
+      - ./app/static/uploads:/app/app/static/uploads
+      

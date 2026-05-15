@@ -2,12 +2,34 @@
 Application factory for the Delcon lead-gen site.
 """
 import os
+import time
 from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_mailman import Mail
 from config import Config
 
+# ── Simple in-process TTL cache for context-processor queries ──
+# These values (site settings + nav services) change only when an admin
+# saves them, so fetching from DB on every request is wasteful.
+_CP_CACHE: dict = {}
+_CP_TTL = 60  # seconds
+
+
+def _cp_get(key: str, loader, ttl: int = _CP_TTL):
+    """Return cached value for *key*, refreshing via *loader* when stale."""
+    entry = _CP_CACHE.get(key)
+    if entry is None or time.monotonic() - entry['ts'] > ttl:
+        _CP_CACHE[key] = {'data': loader(), 'ts': time.monotonic()}
+    return _CP_CACHE[key]['data']
+
+
+def invalidate_cp_cache():
+    """Call after any admin write that changes settings or services."""
+    _CP_CACHE.clear()
+
 db = SQLAlchemy()
+mail = Mail()
 
 
 def create_app(config_class=Config):
@@ -16,6 +38,7 @@ def create_app(config_class=Config):
 
     # ── Extensions ─────────────────────────────────────────
     db.init_app(app)
+    mail.init_app(app)
 
     # ── Blueprints ──────────────────────────────────────────
     from app.routes import main
@@ -28,22 +51,29 @@ def create_app(config_class=Config):
     @app.context_processor
     def inject_globals():
         """
-        Makes shared variables available in every template:
-          now           — current UTC datetime (footer copyright year)
-          site_settings — dict of all SiteSetting K/V pairs
-          nav_services  — active Service rows for the navbar dropdown
+        Makes shared variables available in every template.
+        Both DB calls are cached for _CP_TTL seconds so we don't hit
+        the database on every single HTTP request.
         """
         from app.models import SiteSetting, Service
         try:
-            site_settings = {row.key: row.value for row in SiteSetting.query.all()}
-            nav_services = (
-                Service.query
-                .filter_by(is_active=True)
-                .order_by(Service.sort_order, Service.name)
-                .all()
+            site_settings = _cp_get(
+                'site_settings',
+                lambda: {row.key: row.value for row in SiteSetting.query.all()},
+            )
+            # Cache nav_services as plain dicts — avoids DetachedInstanceError
+            # when the SQLAlchemy session used during caching is no longer active.
+            nav_services = _cp_get(
+                'nav_services',
+                lambda: [
+                    {'name': s.name, 'slug': s.slug, 'spec_range': s.spec_range}
+                    for s in Service.query
+                        .filter_by(is_active=True)
+                        .order_by(Service.sort_order, Service.name)
+                        .all()
+                ],
             )
         except Exception:
-            # DB not yet initialised on very first request
             site_settings = {}
             nav_services = []
 

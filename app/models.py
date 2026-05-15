@@ -17,9 +17,9 @@ class Lead(db.Model):
     phone        = db.Column(db.String(30),  nullable=False)
     service_type = db.Column(db.String(60),  nullable=False)
     message      = db.Column(db.Text,        nullable=False)
-    status       = db.Column(db.String(20),  nullable=False, default='new')
+    status       = db.Column(db.String(20),  nullable=False, default='new', index=True)
     ip_address   = db.Column(db.String(45),  nullable=True)
-    created_at   = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
+    created_at   = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow, index=True)
 
     VALID_STATUSES = ('new', 'open', 'replied', 'closed')
 
@@ -46,7 +46,7 @@ class Service(db.Model):
     methodology       = db.Column(db.Text,        nullable=True)
     applications      = db.Column(db.Text,        nullable=True)   # JSON list
     meta_description  = db.Column(db.String(320), nullable=True)
-    is_active         = db.Column(db.Boolean,     nullable=False, default=True)
+    is_active         = db.Column(db.Boolean,     nullable=False, default=True, index=True)
     sort_order        = db.Column(db.Integer,     nullable=False, default=0)
     created_at        = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
 
@@ -69,7 +69,7 @@ class Project(db.Model):
     drive_length   = db.Column(db.String(50),  nullable=True)
     value          = db.Column(db.String(50),  nullable=True)
     completed_date = db.Column(db.Date,        nullable=True)
-    is_active      = db.Column(db.Boolean,     nullable=False, default=True)
+    is_active      = db.Column(db.Boolean,     nullable=False, default=True, index=True)
     sort_order     = db.Column(db.Integer,     nullable=False, default=0)
     created_at     = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
 

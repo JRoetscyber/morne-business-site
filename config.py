@@ -5,8 +5,10 @@ safe fallbacks are provided for local development only.
 Copy .env.example to .env and set real values before deploying.
 """
 import os
+from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
 
 
 class Config:
@@ -33,11 +35,29 @@ class Config:
 
     # ── Upload paths ─────────────────────────────────────────
     UPLOAD_FOLDER = os.path.join(basedir, 'app', 'static', 'uploads')
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'webm'}
+    MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50 MB hard cap on uploads
+    # Cache static files for 1 year in production (Nginx handles this in prod,
+    # but this covers Flask's dev server and any Flask-served static responses)
+    SEND_FILE_MAX_AGE_DEFAULT = 31536000
+
+    # ── Email Settings (Flask-Mailman) ───────────────────────
+    MAIL_SERVER   = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT     = int(os.environ.get('MAIL_PORT', 587))
+    MAIL_USE_TLS  = os.environ.get('MAIL_USE_TLS', 'true').lower() == 'true'
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'notifications@delcon.co.za')
+    MAIL_BACKEND  = os.environ.get('MAIL_BACKEND', 'flask_mailman.backends.smtp.EmailBackend')
+    
+    # Recipient for lead notifications
+    CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'jroets@cyber.co.za')
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SEND_FILE_MAX_AGE_DEFAULT = 0  # no caching in dev — CSS/JS changes show instantly
+    MAIL_BACKEND = os.environ.get('MAIL_BACKEND', 'flask_mailman.backends.console.EmailBackend')
 
 
 class ProductionConfig(Config):
